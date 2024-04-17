@@ -13,6 +13,8 @@ struct StateMinus {
   unsigned bad_corners = 0;
   unsigned bad_edges = 0;
 
+  // Defaulted operator== can only be used from C++20
+  // bool operator==(const StateMinus &other) const = default;
   bool operator==(const StateMinus &other) { return !(*this != other); }
 
   bool operator!=(const StateMinus &other) {
