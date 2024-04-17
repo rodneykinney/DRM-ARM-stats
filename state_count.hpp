@@ -12,6 +12,12 @@ unsigned dr_coord(DominoCube &cube) {
 struct StateMinus {
   unsigned bad_corners = 0;
   unsigned bad_edges = 0;
+
+  bool operator==(const StateMinus &other) { return !(*this != other); }
+
+  bool operator!=(const StateMinus &other) {
+    return bad_corners != other.bad_corners || bad_edges != other.bad_edges;
+  }
 };
 
 auto drm(const DominoCube cube) {
