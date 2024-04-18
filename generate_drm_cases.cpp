@@ -25,26 +25,8 @@ struct CaseData {
   }
 };
 
-constexpr unsigned N_EOFB_HTM_MOVES = 14;
-std::array<Move, N_EOFB_HTM_MOVES> EOFB_HTM_Moves{U,  U2, U3, D,  D2, D3, R,
-                                                  R2, R3, L,  L2, L3, F2, B2};
-
 constexpr unsigned table_size = DominoCube::N_ESL * DominoCube::N_CO;
 std::array<CaseData, table_size> table;
-
-struct DomiNode {
-  DominoCube state = DominoCube();
-  unsigned depth = 0;
-  Algorithm path;
-
-  auto make_child(const Move &m) {
-    auto cube = state;
-    cube.apply(m);
-    auto child = DomiNode{cube, depth + 1, path};
-    child.path.append(m);
-    return child;
-  }
-};
 
 auto unassigned = CaseData{StateMinus(), StateMinus(), 1000};
 auto filler = std::function([](DomiNode &node) -> CaseData {

@@ -85,3 +85,17 @@ struct DominoCube {
     std::cout << std::endl;
   };
 };
+
+struct DomiNode {
+  DominoCube state = DominoCube();
+  unsigned depth = 0;
+  Algorithm path;
+
+  auto make_child(const Move &m) {
+    auto cube = state;
+    cube.apply(m);
+    auto child = DomiNode{cube, depth + 1, path};
+    child.path.append(m);
+    return child;
+  }
+};
