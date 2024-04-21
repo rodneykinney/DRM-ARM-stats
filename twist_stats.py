@@ -8,34 +8,22 @@ def unpack(line):
     sol = sol.strip(" \n,")
     return (int(drmc), int(drme)), int(cw), int(ccw), int(depth), sol
 
-class CaseEntry:
-    n_cases = 0 
-    avg_length=0.0
-    sub6_chances=0.0
-    sub7_chances=0.0
-    best_alg=""
-    worst_alg=""
+twist_index = {(3, 3):0, (6, 0):1, (0, 6):1, (4, 4):2, (7, 1):3, (1, 7):3}
+edges_index = {0:0, 2:1, 4:2, 6:3, 8:4}
 
-    def __repr__(self):
-        return f"Average optimal: {self.avg_length:.5f}\nChances of sub 6: {self.sub6_chances:.5f}\nChances of sub 7: {self.sub7_chances:.5f}\nBest case: {self.best_alg}\nWorst case: {self.worst_alg}"
+data_2d = np.zeros((4, len(edges_index)), 
+    dtype=[("n_cases", int),
+           ("avg_length", np.float64),
+           ("sub6_chances", np.float64),
+           ("sub7_chances", np.float64),
+           ("best_alg", 'U30'),
+           ("worst_alg", 'U30')])
 
-squashed = {
-    (twist, edges):CaseEntry() 
-        for twist in ((3, 3), (6, 0), (0, 6), (4, 4), (7, 1), (1, 7)) 
-        for edges in (0, 2, 4, 6, 8)
-    }
+depths = np.zeros(
+    (4, len(edges_index)), 
+    dtype = [("best", int), ("worst", int)])
+depths.fill((100, 0))
 
-worst_cases = {
-    (twist, edges):0
-        for twist in ((3, 3), (6, 0), (0, 6), (4, 4), (7, 1), (1, 7)) 
-        for edges in (0, 2, 4, 6, 8)
-    }
-
-best_cases = {
-    (twist, edges):100
-        for twist in ((3, 3), (6, 0), (0, 6), (4, 4), (7, 1), (1, 7)) 
-        for edges in (0, 2, 4, 6, 8)
-    }
 
 with open("twist_raw_data.csv", "r", encoding="utf-8") as file:
     # Parsing the file to get drm cw and ccw depth and alg for each case
@@ -43,30 +31,25 @@ with open("twist_raw_data.csv", "r", encoding="utf-8") as file:
         drm, cw, ccw, depth, alg = unpack(line)
         assert(depth < 11)
         if drm[0] == 6 or drm[0] == 8:
-            squashed[((cw, ccw), drm[1])].n_cases += 1
-            squashed[((cw, ccw), drm[1])].avg_length += depth
+            i, j = twist_index[cw, ccw], edges_index[drm[1]]
+            data_2d[i, j]["n_cases"] += 1
+            data_2d[i, j]["avg_length"] += depth
             if depth <6:
-                squashed[((cw, ccw), drm[1])].sub6_chances += 1
+                data_2d[i, j]["sub6_chances"] += 1
             if depth <7:
-                squashed[((cw, ccw), drm[1])].sub7_chances += 1
-            if depth < best_cases[((cw, ccw), drm[1])]:
-                best_cases[((cw, ccw), drm[1])] = depth
-                squashed[((cw, ccw), drm[1])].best_alg = alg
-            if depth > worst_cases[((cw, ccw), drm[1])]:
-                worst_cases[((cw, ccw), drm[1])] = depth
-                squashed[((cw, ccw), drm[1])].worst_alg = alg
+                data_2d[i, j]["sub7_chances"] += 1
+            if depth < depths[i, j]["best"]:
+                depths[i, j]["best"] = depth
+                data_2d[i, j]["best_alg"] = alg
+            if depth > depths[i, j]["worst"]:
+                depths[i, j]["worst"] = depth
+                data_2d[i, j]["worst_alg"] = alg
 
 # Compute averages
-for key in squashed:
-    squashed[key].avg_length /= squashed[key].n_cases
-    squashed[key].sub6_chances /= squashed[key].n_cases
-    squashed[key].sub7_chances /= squashed[key].n_cases
+data_2d["avg_length"] /= data_2d["n_cases"]
+data_2d["sub6_chances"] /= data_2d["n_cases"]
+data_2d["sub7_chances"] /= data_2d["n_cases"]
 
-# # Clear duplicates cause (7, 1) is just a (7, 1) symetry
-# squashed[(7, 1)].n_cases += squashed[(1, 7)].n_cases
-# squashed[(6, 0)].n_cases += squashed[(0, 6)].n_cases
-# squashed = {key: squashed[key] for key in squashed if key not in ((1, 7), (0, 6))}
-
-for key in squashed:
-    print(key)
-    print(squashed[key])
+print(data_2d["avg_length"])
+print(data_2d["sub6_chances"])
+print(data_2d["sub7_chances"])
