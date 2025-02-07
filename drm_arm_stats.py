@@ -77,6 +77,11 @@ with open("raw_data.csv", "r", encoding="utf-8") as file:
             best_solutions_2d.set(drm, arm, alg)
             min_2d.set(drm, arm, depth)
 
+drm_chance_of_sub6 = np.sum(data_2d["sub6_probability"], axis=1) / np.sum(data_2d["n_cases"], axis=1)
+arm_chance_of_sub6 = np.sum(data_2d["sub6_probability"], axis=0) / np.sum(data_2d["n_cases"], axis=0)
+drm_chance_of_sub7 = np.sum(data_2d["sub7_probability"], axis=1) / np.sum(data_2d["n_cases"], axis=1)
+arm_chance_of_sub7 = np.sum(data_2d["sub7_probability"], axis=0) / np.sum(data_2d["n_cases"], axis=0)
+
 # This produces nan values, but numpy can handle it safely
 data_2d["avg_length"] /= data_2d["n_cases"]
 data_2d["sub6_probability"] /= data_2d["n_cases"]
@@ -87,7 +92,11 @@ data_2d["sub7_probability"] /= data_2d["n_cases"]
 np.savetxt('n_cases.csv', data_2d["n_cases"], fmt='%d', delimiter=',')
 np.savetxt('avg_length.csv', data_2d["avg_length"], fmt='%2.4f', delimiter=',')
 np.savetxt('sub6_probability.csv', data_2d["sub6_probability"], fmt='%2.4f', delimiter=',')
+np.savetxt('drm_chance_of_sub6.csv', drm_chance_of_sub6, fmt='%2.4f', delimiter=',')
+np.savetxt('arm_chance_of_sub6.csv', arm_chance_of_sub6, fmt='%2.4f', delimiter=',')
 np.savetxt('sub7_probability.csv', data_2d["sub7_probability"], fmt='%2.4f', delimiter=',')
+np.savetxt('drm_chance_of_sub7.csv', drm_chance_of_sub7, fmt='%2.4f', delimiter=',')
+np.savetxt('arm_chance_of_sub7.csv', arm_chance_of_sub7, fmt='%2.4f', delimiter=',')
 
 with open("worst_solutions.csv", "w") as f:
     for row in worst_solutions_2d:
