@@ -84,6 +84,11 @@ struct DominoCube {
     }
     std::cout << std::endl;
   };
+
+  bool operator==(const DominoCube &other) const {
+    return co == other.co && esl == other.esl;
+  };
+  bool operator!=(const DominoCube &other) const { return !(*this == other); }
 };
 
 struct DomiNode {
@@ -98,4 +103,10 @@ struct DomiNode {
     child.path.append(m);
     return child;
   }
+
+  bool operator==(const DomiNode &other) const {
+    return state == other.state && depth == other.depth;
+  }
+
+  bool operator!=(const DomiNode &other) const { return !(*this == other); }
 };
