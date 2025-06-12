@@ -1,0 +1,776 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>6c4e</title>
+            
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 20px;
+                background-color: #f5f5f5;
+                text-align: center;
+            }
+            
+            .container {
+                margin: 0 auto;
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+                display: inline-block;
+                min-width: 400px;
+            }
+            
+            h1 {
+                text-align: center;
+                color: #333;
+                margin-bottom: 30px;
+                font-size: 2.5em;
+                font-weight: 300;
+            }
+            
+            .tree-container {
+                position: relative;
+                width: 100%;
+                min-height: 400px;
+                border: 3px solid #ddd;
+                border-radius: 10px;
+                overflow: auto;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            }
+            
+            .tree-node {
+                position: absolute;
+                border: 2px solid #333;
+                border-radius: 8px;
+                display: flex;
+                flex-direction: column;
+                box-sizing: border-box;
+            }
+            
+            .node-content {
+                padding: 10px;
+                text-align: center;
+                font-weight: bold;
+                color: white;
+                // text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+                line-height: 1.3;
+                overflow: hidden;
+                word-wrap: break-word;
+                position: relative;
+                z-index: 1;
+            }
+            
+            .leaf-node .node-content {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+            }
+            
+            .non-leaf-node .node-content {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .info {
+                text-align: center;
+                color: #666;
+                margin-top: 20px;
+                font-size: 1.1em;
+            }
+            
+            .tree-stats {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                text-align: center;
+                color: #495057;
+            }
+        </style>
+        
+        </head>
+        <body>
+            <div class="container">
+                <h1>6c4e</h1>
+                
+                <div class="tree-stats">
+                  Probability of sub-7 DR, given corner/edge configuration counts
+                </div>
+                
+                <div class="tree-container" style="width: 16028.0px; height: 992.5px;">
+                    
+        <div id="node_1" class="tree-node non-leaf-node" 
+             style="left: 20.0px; top: 20px; width: 15988.0px; height: 952.5px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 16.0px; color: black; height: 144.0px;">
+                All<br>100.0% of cases (103488/103488)<br>p_sub7=3.0%<br>best: L U' D L (4)<br>worst: R U D L F2 L D B2 L' F2 (10)
+            </div>
+        <div id="node_2" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 154.0px; width: 7414.0px; height: 788.5px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 14.5px; color: black; height: 134.25px;">
+                n_pairs <= 2<br>87.5% of cases (90528/103488)<br>p_sub7=1.5%<br>best: L U D L (4)<br>worst: R U D L F2 L D B2 L' F2 (10)
+            </div>
+        <div id="node_3" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 144.25px; width: 2992.0px; height: 634.25px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 13.0px; color: black; height: 124.50000000000001px;">
+                n_pairs <= 1<br>50.6% of cases (52368/103488)<br>p_sub7=0.6%<br>best: L D' R2 U' L (5)<br>worst: R U D L F2 L D B2 L' F2 (10)
+            </div>
+        <div id="node_4" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 134.5px; width: 1460.0px; height: 489.75px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 114.75px;">
+                n_pairs = 0<br>13.3% of cases (13776/103488)<br>p_sub7=0.1%<br>best: L F2 U' L2 U L' (6)<br>worst: R U D L F2 L D B2 L' F2 (10)
+            </div>
+        <div id="node_5" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 124.75px; width: 1150.0px; height: 355.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm <= 1<br>5.0% of cases (5136/103488)<br>p_sub7=0.2%<br>best: L F2 U' L2 U L' (6)<br>worst: R U D R U2 R2 D2 R' U D (10)
+            </div>
+        <div id="node_6" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 115.0px; width: 548.0px; height: 230.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_ppairs <= 2<br>2.8% of cases (2928/103488)<br>p_sub7=0.0%<br>best: R U' L2 F2 B2 U' L (7)<br>worst: R U D R U2 R2 D2 R' U D (10)
+            </div>
+        <div id="node_7" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 238.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm = 0<br>0.1% of cases (96/103488)<br>p_sub7=0.0%<br>best: R B2 D R' L' D' L F2 U (9)<br>worst: R B2 D R' L' D' L F2 U (9)
+            </div></div>
+        <div id="node_8" class="tree-node leaf-node" 
+             style="left: 258.0px; top: 115.0px; width: 250.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm >= 1<br>2.7% of cases (2832/103488)<br>p_sub7=0.0%<br>best: R U' L2 F2 B2 U' L (7)<br>worst: R U D R U2 R2 D2 R' U D (10)
+            </div></div></div>
+        <div id="node_9" class="tree-node non-leaf-node" 
+             style="left: 568.0px; top: 115.0px; width: 542.0px; height: 230.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_ppairs >= 3<br>2.1% of cases (2208/103488)<br>p_sub7=0.4%<br>best: L F2 U' L2 U L' (6)<br>worst: R U R2 U D' B2 R2 D2 L (9)
+            </div>
+        <div id="node_10" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 244.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split = 0<br>1.4% of cases (1440/103488)<br>p_sub7=0.0%<br>best: L F2 U R' L U' L' (7)<br>worst: R U B2 D2 R2 B2 L' D F2 (9)
+            </div></div>
+        <div id="node_11" class="tree-node leaf-node" 
+             style="left: 264.0px; top: 115.0px; width: 238.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split >= 1<br>0.7% of cases (768/103488)<br>p_sub7=1.0%<br>best: L F2 U' L2 U L' (6)<br>worst: R U R2 U D' B2 R2 D2 L (9)
+            </div></div></div></div>
+        <div id="node_12" class="tree-node leaf-node" 
+             style="left: 1170.0px; top: 124.75px; width: 250.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm >= 2<br>8.3% of cases (8640/103488)<br>p_sub7=0.0%<br>best: R B2 R U' D' R2 L' (7)<br>worst: R U D L F2 L D B2 L' F2 (10)
+            </div></div></div>
+        <div id="node_13" class="tree-node non-leaf-node" 
+             style="left: 1480.0px; top: 134.5px; width: 1472.0px; height: 489.75px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 114.75px;">
+                n_pairs >= 1<br>37.3% of cases (38592/103488)<br>p_sub7=0.7%<br>best: L D' R2 U' L (5)<br>worst: R U D B2 R' D' R' D' L2 U' (10)
+            </div>
+        <div id="node_14" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 124.75px; width: 1144.0px; height: 355.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm <= 3<br>33.7% of cases (34848/103488)<br>p_sub7=0.8%<br>best: L D' R2 U' L (5)<br>worst: R U D R U2 R' F2 D F2 D2 (10)
+            </div>
+        <div id="node_15" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 115.0px; width: 530.0px; height: 230.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split = 0<br>15.4% of cases (15936/103488)<br>p_sub7=0.5%<br>best: R B2 U L' U L' (6)<br>worst: R U D' R D2 L D B2 L (9)
+            </div>
+        <div id="node_16" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 226.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm <= 2<br>6.1% of cases (6336/103488)<br>p_sub7=1.3%<br>best: R B2 U L' U L' (6)<br>worst: R U D' R D2 L D B2 L (9)
+            </div></div>
+        <div id="node_17" class="tree-node leaf-node" 
+             style="left: 246.0px; top: 115.0px; width: 244.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm >= 3<br>9.3% of cases (9600/103488)<br>p_sub7=0.0%<br>best: R F2 R' U2 D' L F2 (7)<br>worst: R U D2 L2 U F2 L' U2 L2 (9)
+            </div></div></div>
+        <div id="node_18" class="tree-node non-leaf-node" 
+             style="left: 550.0px; top: 115.0px; width: 554.0px; height: 230.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split >= 1<br>18.3% of cases (18912/103488)<br>p_sub7=1.1%<br>best: L D' R2 U' L (5)<br>worst: R U D R U2 R' F2 D F2 D2 (10)
+            </div>
+        <div id="node_19" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 256.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm <= 2<br>16.0% of cases (16608/103488)<br>p_sub7=0.8%<br>best: L U D' R2 L' (5)<br>worst: R U D R U2 R' F2 D F2 D2 (10)
+            </div></div>
+        <div id="node_20" class="tree-node leaf-node" 
+             style="left: 276.0px; top: 115.0px; width: 238.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm >= 3<br>2.2% of cases (2304/103488)<br>p_sub7=3.5%<br>best: L D' R2 U' L (5)<br>worst: R U L D' R2 L' D B2 L' (9)
+            </div></div></div></div>
+        <div id="node_21" class="tree-node leaf-node" 
+             style="left: 1164.0px; top: 124.75px; width: 268.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm >= 4<br>3.6% of cases (3744/103488)<br>p_sub7=0.0%<br>best: R F2 R U' D' L' U (7)<br>worst: R U D B2 R' D' R' D' L2 U' (10)
+            </div></div></div></div>
+        <div id="node_22" class="tree-node non-leaf-node" 
+             style="left: 3012.0px; top: 144.25px; width: 4362.0px; height: 634.25px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 13.0px; color: black; height: 124.50000000000001px;">
+                n_pairs >= 2<br>36.9% of cases (38160/103488)<br>p_sub7=2.7%<br>best: L U D L (4)<br>worst: R U D2 R2 U B2 L' D R U2 (10)
+            </div>
+        <div id="node_23" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 134.5px; width: 2020.0px; height: 489.75px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 114.75px;">
+                n_ppairs <= 1<br>25.3% of cases (26160/103488)<br>p_sub7=2.1%<br>best: L D R2 U2 L' (5)<br>worst: R U D2 R2 U B2 L' D R U2 (10)
+            </div>
+        <div id="node_24" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 124.75px; width: 1114.0px; height: 355.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm <= 2<br>17.4% of cases (18000/103488)<br>p_sub7=2.7%<br>best: L D R2 U2 L' (5)<br>worst: R U D2 R2 U B2 L' D R U2 (10)
+            </div>
+        <div id="node_25" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 115.0px; width: 542.0px; height: 230.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm <= 2<br>11.8% of cases (12240/103488)<br>p_sub7=3.6%<br>best: L D R2 U2 L' (5)<br>worst: R U D2 R2 U B2 L' D R U2 (10)
+            </div>
+        <div id="node_26" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 256.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm = 0<br>3.1% of cases (3240/103488)<br>p_sub7=1.6%<br>best: R F2 R B2 R' B2 (6)<br>worst: R U D2 R2 U B2 L' D R U2 (10)
+            </div></div>
+        <div id="node_27" class="tree-node leaf-node" 
+             style="left: 276.0px; top: 115.0px; width: 226.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm >= 1<br>8.7% of cases (9000/103488)<br>p_sub7=4.3%<br>best: L D R2 U2 L' (5)<br>worst: R U L B2 U D L' U R' (9)
+            </div></div></div>
+        <div id="node_28" class="tree-node non-leaf-node" 
+             style="left: 562.0px; top: 115.0px; width: 512.0px; height: 230.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm >= 3<br>5.6% of cases (5760/103488)<br>p_sub7=0.8%<br>best: L D R' B2 D R' (6)<br>worst: R U L2 F2 R U' D F2 U (9)
+            </div>
+        <div id="node_29" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 232.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_ppairs = 0<br>1.1% of cases (1152/103488)<br>p_sub7=0.0%<br>best: R U L2 F2 R L2 D (7)<br>worst: R U L2 F2 R U' D F2 U (9)
+            </div></div>
+        <div id="node_30" class="tree-node leaf-node" 
+             style="left: 252.0px; top: 115.0px; width: 220.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_ppairs >= 1<br>4.5% of cases (4608/103488)<br>p_sub7=1.0%<br>best: L D R' B2 D R' (6)<br>worst: R U D2 R F2 L D L D (9)
+            </div></div></div></div>
+        <div id="node_31" class="tree-node non-leaf-node" 
+             style="left: 1134.0px; top: 124.75px; width: 846.0px; height: 355.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm >= 3<br>7.9% of cases (8160/103488)<br>p_sub7=0.8%<br>best: L D L U L F2 (6)<br>worst: R U D2 B2 D F2 L' D2 R2 (9)
+            </div>
+        <div id="node_32" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 250.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_ppairs = 0<br>1.3% of cases (1344/103488)<br>p_sub7=0.0%<br>best: L U R U' F2 L B2 (7)<br>worst: R U D2 R' F2 L' U' D2 F2 (9)
+            </div></div>
+        <div id="node_33" class="tree-node non-leaf-node" 
+             style="left: 270.0px; top: 115.0px; width: 536.0px; height: 230.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_ppairs >= 1<br>6.6% of cases (6816/103488)<br>p_sub7=0.9%<br>best: L D L U L F2 (6)<br>worst: R U D2 B2 D F2 L' D2 R2 (9)
+            </div>
+        <div id="node_34" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 232.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs = 0<br>1.2% of cases (1220/103488)<br>p_sub7=0.2%<br>best: R U' R' D' R' B2 (6)<br>worst: R U D L B2 L' U2 D F2 (9)
+            </div></div>
+        <div id="node_35" class="tree-node leaf-node" 
+             style="left: 252.0px; top: 115.0px; width: 244.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs >= 1<br>5.4% of cases (5596/103488)<br>p_sub7=1.1%<br>best: L D L U L F2 (6)<br>worst: R U D2 B2 D F2 L' D2 R2 (9)
+            </div></div></div></div></div>
+        <div id="node_36" class="tree-node non-leaf-node" 
+             style="left: 2040.0px; top: 134.5px; width: 2282.0px; height: 489.75px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 114.75px;">
+                n_ppairs >= 2<br>11.6% of cases (12000/103488)<br>p_sub7=4.0%<br>best: L U D L (4)<br>worst: R U R2 U2 B2 U2 L2 D L (9)
+            </div>
+        <div id="node_37" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 124.75px; width: 1120.0px; height: 355.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm = 0<br>1.5% of cases (1512/103488)<br>p_sub7=1.1%<br>best: L U' D' L U' D (6)<br>worst: R U R2 U2 B2 U2 L2 D L (9)
+            </div>
+        <div id="node_38" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 115.0px; width: 512.0px; height: 230.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm <= 2<br>0.6% of cases (648/103488)<br>p_sub7=2.5%<br>best: L U' D' L U' D (6)<br>worst: R U D B2 R U B2 D2 R' (9)
+            </div>
+        <div id="node_39" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 220.0px; height: 105.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split = 0<br>0.1% of cases (72/103488)<br>p_sub7=22.2%<br>best: L U' D' L U' D (6)<br>worst: R U F2 R D L2 D2 L' (8)
+            </div></div>
+        <div id="node_40" class="tree-node leaf-node" 
+             style="left: 240.0px; top: 115.0px; width: 232.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split >= 1<br>0.6% of cases (576/103488)<br>p_sub7=0.0%<br>best: R F2 U' L2 U' R L (7)<br>worst: R U D B2 R U B2 D2 R' (9)
+            </div></div></div>
+        <div id="node_41" class="tree-node non-leaf-node" 
+             style="left: 532.0px; top: 115.0px; width: 548.0px; height: 230.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm >= 3<br>0.8% of cases (864/103488)<br>p_sub7=0.0%<br>best: R B2 L' U' L U R' (7)<br>worst: R U R2 U2 B2 U2 L2 D L (9)
+            </div>
+        <div id="node_42" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 250.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split = 0<br>0.6% of cases (576/103488)<br>p_sub7=0.0%<br>best: L U2 D' L' D2 L' D' (7)<br>worst: R U D2 R' U' B2 L' F2 D' (9)
+            </div></div>
+        <div id="node_43" class="tree-node leaf-node" 
+             style="left: 270.0px; top: 115.0px; width: 238.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split >= 1<br>0.3% of cases (288/103488)<br>p_sub7=0.0%<br>best: R B2 L' U' L U R' (7)<br>worst: R U R2 U2 B2 U2 L2 D L (9)
+            </div></div></div></div>
+        <div id="node_44" class="tree-node non-leaf-node" 
+             style="left: 1140.0px; top: 124.75px; width: 1102.0px; height: 355.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm >= 1<br>10.1% of cases (10488/103488)<br>p_sub7=4.5%<br>best: L U D L (4)<br>worst: R U L2 U2 F2 R D L2 U' (9)
+            </div>
+        <div id="node_45" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 115.0px; width: 518.0px; height: 230.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm <= 1<br>4.6% of cases (4800/103488)<br>p_sub7=6.5%<br>best: L U' L2 U' L (5)<br>worst: R U R2 U2 R D L2 U2 R (9)
+            </div>
+        <div id="node_46" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 226.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split = 0<br>1.9% of cases (1920/103488)<br>p_sub7=3.3%<br>best: R U R D R B2 (6)<br>worst: R U D' R U2 R D F2 R (9)
+            </div></div>
+        <div id="node_47" class="tree-node leaf-node" 
+             style="left: 246.0px; top: 115.0px; width: 232.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split >= 1<br>2.8% of cases (2880/103488)<br>p_sub7=8.6%<br>best: L U' L2 U' L (5)<br>worst: R U R2 U2 R D L2 U2 R (9)
+            </div></div></div>
+        <div id="node_48" class="tree-node non-leaf-node" 
+             style="left: 538.0px; top: 115.0px; width: 524.0px; height: 230.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm >= 2<br>5.5% of cases (5688/103488)<br>p_sub7=2.7%<br>best: L U D L (4)<br>worst: R U L2 U2 F2 R D L2 U' (9)
+            </div>
+        <div id="node_49" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 238.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm <= 3<br>4.9% of cases (5040/103488)<br>p_sub7=3.0%<br>best: L U D L (4)<br>worst: R U L2 U2 F2 R D L2 U' (9)
+            </div></div>
+        <div id="node_50" class="tree-node leaf-node" 
+             style="left: 258.0px; top: 115.0px; width: 226.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm >= 4<br>0.6% of cases (648/103488)<br>p_sub7=0.6%<br>best: R U D R B2 U (6)<br>worst: R U B2 R D2 L' U L U (9)
+            </div></div></div></div></div></div></div>
+        <div id="node_51" class="tree-node non-leaf-node" 
+             style="left: 7434.0px; top: 154.0px; width: 8514.0px; height: 788.5px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 14.5px; color: black; height: 134.25px;">
+                n_pairs >= 3<br>12.5% of cases (12960/103488)<br>p_sub7=13.5%<br>best: L U' D L (4)<br>worst: R U D2 R D' R U R2 U (9)
+            </div>
+        <div id="node_52" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 144.25px; width: 4558.0px; height: 634.25px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 13.0px; color: black; height: 124.50000000000001px;">
+                edge_arm <= 1<br>7.2% of cases (7488/103488)<br>p_sub7=17.1%<br>best: L D R2 U2 L (5)<br>worst: R U R2 U2 R' F2 D' L2 F2 (9)
+            </div>
+        <div id="node_53" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 134.5px; width: 2294.0px; height: 489.75px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 114.75px;">
+                n_pairs <= 3<br>6.4% of cases (6672/103488)<br>p_sub7=15.6%<br>best: L D R2 U2 L (5)<br>worst: R U R2 U2 R' F2 D' L2 F2 (9)
+            </div>
+        <div id="node_54" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 124.75px; width: 1126.0px; height: 355.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split = 0<br>3.3% of cases (3408/103488)<br>p_sub7=11.5%<br>best: R U D' R' D' (5)<br>worst: R U R2 U2 R' F2 D' L2 F2 (9)
+            </div>
+        <div id="node_55" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 115.0px; width: 548.0px; height: 230.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_ppairs = 0<br>1.8% of cases (1824/103488)<br>p_sub7=8.3%<br>best: L U L D L' F2 (6)<br>worst: R U R2 U2 R' F2 D' L2 F2 (9)
+            </div>
+        <div id="node_56" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 238.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm = 0<br>0.8% of cases (864/103488)<br>p_sub7=6.5%<br>best: R D F2 L2 D R (6)<br>worst: R U L B2 L U' D2 B2 R2 (9)
+            </div></div>
+        <div id="node_57" class="tree-node leaf-node" 
+             style="left: 258.0px; top: 115.0px; width: 250.0px; height: 105.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm >= 1<br>0.9% of cases (960/103488)<br>p_sub7=10.0%<br>best: L U L D L' F2 (6)<br>worst: R U R2 U2 R' F2 D' L2 F2 (9)
+            </div></div></div>
+        <div id="node_58" class="tree-node non-leaf-node" 
+             style="left: 568.0px; top: 115.0px; width: 518.0px; height: 230.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_ppairs >= 1<br>1.5% of cases (1584/103488)<br>p_sub7=15.2%<br>best: R U D' R' D' (5)<br>worst: R U' F2 R2 U B2 R' B2 (8)
+            </div>
+        <div id="node_59" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 226.0px; height: 105.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm <= 2<br>0.4% of cases (384/103488)<br>p_sub7=25.0%<br>best: R U D' R' D' (5)<br>worst: R U R2 D' B2 R2 B2 R (8)
+            </div></div>
+        <div id="node_60" class="tree-node leaf-node" 
+             style="left: 246.0px; top: 115.0px; width: 232.0px; height: 105.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm >= 3<br>1.2% of cases (1200/103488)<br>p_sub7=12.0%<br>best: L U L D L (5)<br>worst: R U' F2 R2 U B2 R' B2 (8)
+            </div></div></div></div>
+        <div id="node_61" class="tree-node non-leaf-node" 
+             style="left: 1146.0px; top: 124.75px; width: 1108.0px; height: 355.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split >= 1<br>3.2% of cases (3264/103488)<br>p_sub7=19.9%<br>best: L D R2 U2 L (5)<br>worst: R U D' B2 R' U' B2 R' D (9)
+            </div>
+        <div id="node_62" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 115.0px; width: 536.0px; height: 230.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_ppairs = 0<br>1.4% of cases (1440/103488)<br>p_sub7=16.1%<br>best: L D R2 U2 L (5)<br>worst: R U D' B2 R' U' B2 R' D (9)
+            </div>
+        <div id="node_63" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 232.0px; height: 105.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm <= 1<br>0.3% of cases (288/103488)<br>p_sub7=30.6%<br>best: R B2 R' F2 R (5)<br>worst: R D2 L' U' R' D2 R U' (8)
+            </div></div>
+        <div id="node_64" class="tree-node leaf-node" 
+             style="left: 252.0px; top: 115.0px; width: 244.0px; height: 105.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm >= 2<br>1.1% of cases (1152/103488)<br>p_sub7=12.5%<br>best: L D R2 U2 L (5)<br>worst: R U D' B2 R' U' B2 R' D (9)
+            </div></div></div>
+        <div id="node_65" class="tree-node non-leaf-node" 
+             style="left: 556.0px; top: 115.0px; width: 512.0px; height: 230.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_ppairs >= 1<br>1.8% of cases (1824/103488)<br>p_sub7=22.8%<br>best: L U L' U L' (5)<br>worst: R U R2 D2 B2 R U R2 (8)
+            </div>
+        <div id="node_66" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 220.0px; height: 105.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm = 0<br>0.6% of cases (576/103488)<br>p_sub7=27.8%<br>best: L U L' U L' (5)<br>worst: R U R2 D2 B2 R U R2 (8)
+            </div></div>
+        <div id="node_67" class="tree-node leaf-node" 
+             style="left: 240.0px; top: 115.0px; width: 232.0px; height: 105.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm >= 1<br>1.2% of cases (1248/103488)<br>p_sub7=20.5%<br>best: L U L2 U2 L' (5)<br>worst: R U B2 U2 L2 U2 R' D' (8)
+            </div></div></div></div></div>
+        <div id="node_68" class="tree-node non-leaf-node" 
+             style="left: 2314.0px; top: 134.5px; width: 2204.0px; height: 489.75px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 114.75px;">
+                n_pairs >= 4<br>0.8% of cases (816/103488)<br>p_sub7=29.4%<br>best: R U2 R D R (5)<br>worst: R U R F2 D' R B2 R' U2 (9)
+            </div>
+        <div id="node_69" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 124.75px; width: 1054.0px; height: 355.0px; 
+                    background-color: #88ff88;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm <= 1<br>0.3% of cases (288/103488)<br>p_sub7=40.3%<br>best: R U2 R D R (5)<br>worst: R U2 R U2 F2 R F2 L (8)
+            </div>
+        <div id="node_70" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 115.0px; width: 506.0px; height: 230.0px; 
+                    background-color: #88ff88;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split = 0<br>0.1% of cases (144/103488)<br>p_sub7=44.4%<br>best: R U2 R D R (5)<br>worst: R U2 R D F2 R' F2 R (8)
+            </div>
+        <div id="node_71" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 226.0px; height: 105.0px; 
+                    background-color: #00dd00;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs = 0<br>0.0% of cases (20/103488)<br>p_sub7=70.0%<br>best: L U' R' B2 R U' (6)<br>worst: R U2 R D F2 L' U2 L' (8)
+            </div></div>
+        <div id="node_72" class="tree-node leaf-node" 
+             style="left: 246.0px; top: 115.0px; width: 220.0px; height: 105.0px; 
+                    background-color: #88ff88;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs >= 1<br>0.1% of cases (124/103488)<br>p_sub7=40.3%<br>best: R U2 R D R (5)<br>worst: R U2 R D F2 R' F2 R (8)
+            </div></div></div>
+        <div id="node_73" class="tree-node non-leaf-node" 
+             style="left: 526.0px; top: 115.0px; width: 488.0px; height: 230.0px; 
+                    background-color: #88ff88;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split >= 1<br>0.1% of cases (144/103488)<br>p_sub7=36.1%<br>best: R F2 L' B2 R (5)<br>worst: R U2 R U2 F2 R F2 L (8)
+            </div>
+        <div id="node_74" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 208.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs = 0<br>0.0% of cases (8/103488)<br>p_sub7=0.0%<br>best: R F2 R' B2 R F2 D2 (7)<br>worst: R U R D R' U R2 D (8)
+            </div></div>
+        <div id="node_75" class="tree-node leaf-node" 
+             style="left: 228.0px; top: 115.0px; width: 220.0px; height: 105.0px; 
+                    background-color: #88ff88;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs >= 1<br>0.1% of cases (136/103488)<br>p_sub7=38.2%<br>best: R F2 L' B2 R (5)<br>worst: R U2 R U2 F2 R F2 L (8)
+            </div></div></div></div>
+        <div id="node_76" class="tree-node non-leaf-node" 
+             style="left: 1074.0px; top: 124.75px; width: 1090.0px; height: 355.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm >= 2<br>0.5% of cases (528/103488)<br>p_sub7=23.5%<br>best: L U' R' B2 R (5)<br>worst: R U R F2 D' R B2 R' U2 (9)
+            </div>
+        <div id="node_77" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 115.0px; width: 530.0px; height: 230.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm <= 2<br>0.3% of cases (336/103488)<br>p_sub7=17.9%<br>best: L U' R' B2 R (5)<br>worst: R U R F2 D' R B2 R' U2 (9)
+            </div>
+        <div id="node_78" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 232.0px; height: 105.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs <= 1<br>0.2% of cases (226/103488)<br>p_sub7=14.2%<br>best: L U' R' B2 R (5)<br>worst: R U R D R' U2 F2 U R2 (9)
+            </div></div>
+        <div id="node_79" class="tree-node leaf-node" 
+             style="left: 252.0px; top: 115.0px; width: 238.0px; height: 105.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs >= 2<br>0.1% of cases (110/103488)<br>p_sub7=25.5%<br>best: L D R B2 R' (5)<br>worst: R U R F2 D' R B2 R' U2 (9)
+            </div></div></div>
+        <div id="node_80" class="tree-node non-leaf-node" 
+             style="left: 550.0px; top: 115.0px; width: 500.0px; height: 230.0px; 
+                    background-color: #88ff88;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm >= 3<br>0.2% of cases (192/103488)<br>p_sub7=33.3%<br>best: L D L U L' (5)<br>worst: R U D' R F2 D L2 D2 (8)
+            </div>
+        <div id="node_81" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 220.0px; height: 105.0px; 
+                    background-color: #00dd00;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs = 0<br>0.0% of cases (40/103488)<br>p_sub7=55.0%<br>best: R F2 L' B2 R U (6)<br>worst: R U2 D R2 D F2 U L' (8)
+            </div></div>
+        <div id="node_82" class="tree-node leaf-node" 
+             style="left: 240.0px; top: 115.0px; width: 220.0px; height: 105.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs >= 1<br>0.1% of cases (152/103488)<br>p_sub7=27.6%<br>best: L D L U L' (5)<br>worst: R U D' R F2 D L2 D2 (8)
+            </div></div></div></div></div></div>
+        <div id="node_83" class="tree-node non-leaf-node" 
+             style="left: 4578.0px; top: 144.25px; width: 3896.0px; height: 634.25px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 13.0px; color: black; height: 124.50000000000001px;">
+                edge_arm >= 2<br>5.3% of cases (5472/103488)<br>p_sub7=8.7%<br>best: L U' D L (4)<br>worst: R U D2 R D' R U R2 U (9)
+            </div>
+        <div id="node_84" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 134.5px; width: 2210.0px; height: 489.75px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 114.75px;">
+                n_ppairs = 0<br>3.0% of cases (3120/103488)<br>p_sub7=6.3%<br>best: L D R2 U2 L U (6)<br>worst: R U D2 R D' R U R2 U (9)
+            </div>
+        <div id="node_85" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 124.75px; width: 1102.0px; height: 355.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_pairs <= 3<br>2.4% of cases (2496/103488)<br>p_sub7=3.8%<br>best: L D R2 U2 L U (6)<br>worst: R U D2 R D' R U R2 U (9)
+            </div>
+        <div id="node_86" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 115.0px; width: 524.0px; height: 230.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm = 0<br>0.3% of cases (288/103488)<br>p_sub7=11.1%<br>best: L D R2 U2 L U (6)<br>worst: R U R U' L' U' L' U2 D (9)
+            </div>
+        <div id="node_87" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 226.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs = 0<br>0.0% of cases (16/103488)<br>p_sub7=0.0%<br>best: R U' L' U L D R (7)<br>worst: R U2 R' B2 L' U D F2 (8)
+            </div></div>
+        <div id="node_88" class="tree-node leaf-node" 
+             style="left: 246.0px; top: 115.0px; width: 238.0px; height: 105.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs >= 1<br>0.3% of cases (272/103488)<br>p_sub7=11.8%<br>best: L D R2 U2 L U (6)<br>worst: R U R U' L' U' L' U2 D (9)
+            </div></div></div>
+        <div id="node_89" class="tree-node non-leaf-node" 
+             style="left: 544.0px; top: 115.0px; width: 518.0px; height: 230.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm >= 1<br>2.1% of cases (2208/103488)<br>p_sub7=2.9%<br>best: R U D' R D B2 (6)<br>worst: R U D2 R D' R U R2 U (9)
+            </div>
+        <div id="node_90" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 232.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs = 0<br>0.3% of cases (336/103488)<br>p_sub7=0.6%<br>best: R D' L2 F2 R' D (6)<br>worst: R U L2 F2 U R D L2 U' (9)
+            </div></div>
+        <div id="node_91" class="tree-node leaf-node" 
+             style="left: 252.0px; top: 115.0px; width: 226.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs >= 1<br>1.8% of cases (1872/103488)<br>p_sub7=3.3%<br>best: R U D' R D B2 (6)<br>worst: R U D2 R D' R U R2 U (9)
+            </div></div></div></div>
+        <div id="node_92" class="tree-node non-leaf-node" 
+             style="left: 1122.0px; top: 124.75px; width: 1048.0px; height: 355.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_pairs >= 4<br>0.6% of cases (624/103488)<br>p_sub7=16.0%<br>best: R U2 R D R U (6)<br>worst: R U D2 F2 L U L' U2 L' (9)
+            </div>
+        <div id="node_93" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 115.0px; width: 458.0px; height: 230.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm = 0<br>0.1% of cases (144/103488)<br>p_sub7=22.2%<br>best: L U2 D L U' L' (6)<br>worst: R U2 R U L D L F2 (8)
+            </div>
+        <div id="node_94" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 190.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs = 0<br>0.0% of cases (4/103488)<br>p_sub7=0.0%<br>best: R F2 R U R D R (7)<br>worst: R F2 R U R D R (7)
+            </div></div>
+        <div id="node_95" class="tree-node leaf-node" 
+             style="left: 210.0px; top: 115.0px; width: 208.0px; height: 105.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs >= 1<br>0.1% of cases (140/103488)<br>p_sub7=22.9%<br>best: L U2 D L U' L' (6)<br>worst: R U2 R U L D L F2 (8)
+            </div></div></div>
+        <div id="node_96" class="tree-node non-leaf-node" 
+             style="left: 478.0px; top: 115.0px; width: 530.0px; height: 230.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm >= 1<br>0.5% of cases (480/103488)<br>p_sub7=14.2%<br>best: R U2 R D R U (6)<br>worst: R U D2 F2 L U L' U2 L' (9)
+            </div>
+        <div id="node_97" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 232.0px; height: 105.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs = 0<br>0.1% of cases (66/103488)<br>p_sub7=24.2%<br>best: R B2 R' D2 L' U (6)<br>worst: R U F2 R' U' B2 R' L2 (8)
+            </div></div>
+        <div id="node_98" class="tree-node leaf-node" 
+             style="left: 252.0px; top: 115.0px; width: 238.0px; height: 105.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs >= 1<br>0.4% of cases (414/103488)<br>p_sub7=12.6%<br>best: R U2 R D R U (6)<br>worst: R U D2 F2 L U L' U2 L' (9)
+            </div></div></div></div></div>
+        <div id="node_99" class="tree-node non-leaf-node" 
+             style="left: 2230.0px; top: 134.5px; width: 1626.0px; height: 489.75px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 114.75px;">
+                n_ppairs >= 1<br>2.3% of cases (2352/103488)<br>p_sub7=11.9%<br>best: L U' D L (4)<br>worst: R U R L2 U L' U' D B2 (9)
+            </div>
+        <div id="node_100" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 124.75px; width: 1048.0px; height: 355.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm <= 2<br>2.1% of cases (2208/103488)<br>p_sub7=12.7%<br>best: L U' D L (4)<br>worst: R U R L2 U L' U' D B2 (9)
+            </div>
+        <div id="node_101" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 115.0px; width: 500.0px; height: 230.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm <= 2<br>0.7% of cases (720/103488)<br>p_sub7=20.0%<br>best: L U' D L (4)<br>worst: R U R L2 U L' U' D B2 (9)
+            </div>
+        <div id="node_102" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 232.0px; height: 105.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split = 0<br>0.1% of cases (144/103488)<br>p_sub7=11.1%<br>best: R D' R2 B2 R' U (6)<br>worst: R U R L2 U L' U' D B2 (9)
+            </div></div>
+        <div id="node_103" class="tree-node leaf-node" 
+             style="left: 252.0px; top: 115.0px; width: 208.0px; height: 105.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split >= 1<br>0.6% of cases (576/103488)<br>p_sub7=22.2%<br>best: L U' D L (4)<br>worst: R U2 R B2 R U R D (8)
+            </div></div></div>
+        <div id="node_104" class="tree-node non-leaf-node" 
+             style="left: 520.0px; top: 115.0px; width: 488.0px; height: 230.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                edge_arm >= 3<br>1.4% of cases (1488/103488)<br>p_sub7=9.1%<br>best: L U' D L U' (5)<br>worst: L U L D2 L U2 L' D (8)
+            </div>
+        <div id="node_105" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 214.0px; height: 105.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split = 0<br>0.2% of cases (240/103488)<br>p_sub7=20.0%<br>best: L U' D L U' (5)<br>worst: R U R L U' B2 L' D (8)
+            </div></div>
+        <div id="node_106" class="tree-node leaf-node" 
+             style="left: 234.0px; top: 115.0px; width: 214.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_orbit_split >= 1<br>1.2% of cases (1248/103488)<br>p_sub7=7.1%<br>best: R U R2 B2 R' D (6)<br>worst: L U L D2 L U2 L' D (8)
+            </div></div></div></div>
+        <div id="node_107" class="tree-node non-leaf-node" 
+             style="left: 1068.0px; top: 124.75px; width: 518.0px; height: 230.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                corner_arm >= 3<br>0.1% of cases (144/103488)<br>p_sub7=0.0%<br>best: R D2 L' U L' U2 R (7)<br>worst: R U D' R D' R2 D R2 U2 (9)
+            </div>
+        <div id="node_108" class="tree-node leaf-node" 
+             style="left: 10px; top: 115.0px; width: 220.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs = 0<br>0.0% of cases (28/103488)<br>p_sub7=0.0%<br>best: R D' R L U' F2 L' (7)<br>worst: R U R2 B2 R U R2 U' (8)
+            </div></div>
+        <div id="node_109" class="tree-node leaf-node" 
+             style="left: 240.0px; top: 115.0px; width: 238.0px; height: 105.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 105.0px;">
+                n_spairs >= 1<br>0.1% of cases (116/103488)<br>p_sub7=0.0%<br>best: R D2 L' U L' U2 R (7)<br>worst: R U D' R D' R2 D R2 U2 (9)
+            </div></div></div></div></div></div></div>
+                </div>
+                
+                <div class="info">
+                    <ul>
+                      <li><b>n_pairs</b>: Number of top pairs
+                      <li><b>n_ppairs</b>: Number of top pseudo-pairs
+                      <li><b>n_spairs</b>: Number of side pairs
+                      <li><b>corner_orbit_split</b>: Number of bad corners in the HTR orbit with the fewest bad corners
+                    </ul>
+                </div>
+            </div>
+        </body>
+        </html>
+        

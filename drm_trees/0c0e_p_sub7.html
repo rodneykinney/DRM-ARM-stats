@@ -1,0 +1,128 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>0c0e</title>
+            
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 20px;
+                background-color: #f5f5f5;
+                text-align: center;
+            }
+            
+            .container {
+                margin: 0 auto;
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+                display: inline-block;
+                min-width: 400px;
+            }
+            
+            h1 {
+                text-align: center;
+                color: #333;
+                margin-bottom: 30px;
+                font-size: 2.5em;
+                font-weight: 300;
+            }
+            
+            .tree-container {
+                position: relative;
+                width: 100%;
+                min-height: 400px;
+                border: 3px solid #ddd;
+                border-radius: 10px;
+                overflow: auto;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            }
+            
+            .tree-node {
+                position: absolute;
+                border: 2px solid #333;
+                border-radius: 8px;
+                display: flex;
+                flex-direction: column;
+                box-sizing: border-box;
+            }
+            
+            .node-content {
+                padding: 10px;
+                text-align: center;
+                font-weight: bold;
+                color: white;
+                // text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+                line-height: 1.3;
+                overflow: hidden;
+                word-wrap: break-word;
+                position: relative;
+                z-index: 1;
+            }
+            
+            .leaf-node .node-content {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+            }
+            
+            .non-leaf-node .node-content {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .info {
+                text-align: center;
+                color: #666;
+                margin-top: 20px;
+                font-size: 1.1em;
+            }
+            
+            .tree-stats {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                text-align: center;
+                color: #495057;
+            }
+        </style>
+        
+        </head>
+        <body>
+            <div class="container">
+                <h1>0c0e</h1>
+                
+                <div class="tree-stats">
+                  Probability of sub-7 DR, given corner/edge configuration counts
+                </div>
+                
+                <div class="tree-container" style="width: 281.6px; height: 184.0px;">
+                    
+        <div id="node_1" class="tree-node leaf-node" 
+             style="left: 20.0px; top: 20px; width: 241.6px; height: 144.0px; 
+                    background-color: #00dd00;">
+            <div class="node-content" style="font-size: 16.0px; color: black; height: 144.0px;">
+                All<br>100.0% of cases (1/1)<br>p_sub7=100.0%<br>best: U (1)<br>worst: U (1)
+            </div></div>
+                </div>
+                
+                <div class="info">
+                    <ul>
+                      <li><b>n_pairs</b>: Number of top pairs
+                      <li><b>n_ppairs</b>: Number of top pseudo-pairs
+                      <li><b>n_spairs</b>: Number of side pairs
+                      <li><b>corner_orbit_split</b>: Number of bad corners in the HTR orbit with the fewest bad corners
+                    </ul>
+                </div>
+            </div>
+        </body>
+        </html>
+        
