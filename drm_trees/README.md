@@ -1,26 +1,24 @@
 # DRM-ARM++
 
-These are visualizations of the probability than an EO configuration 
-will have a sub-7 solution, for different combinations of  
-"features" of the configuration. The features are easily computed by hand, including NISS prediction.
+These are visualizations of the probability that a cube has an EO-to-DR solution with
+less than 7 moves, for different combinations of cube "features." 
+The features are easily computed by hand, including NISS prediction.
 
 The features are:
 
-| Feature             |Explanation|
-|---------------------|--|
-| n_pairs             |Number of bad corner/edge pairs|
-| corner_arm          |Number of out-of-AR corners|
-| edge_arm            |Number of out-of-AR edges|
-| corner_orbit_split  |Number of bad corners in the HTR orbit with the fewest bad corners|
-| corner_orbit_parity |0 = 4a corners, 1 = 4b corners|
-| n_ppairs            |Number of top pseudo-pairs|
-| n_spairs            |Number of side pairs|
+| Feature Name        | Meaning                                                            |
+|---------------------|--------------------------------------------------------------------|
+| n_pairs             | Number of bad corner/edge pairs                                    |
+| corner_arm          | Number of out-of-AR corners                                        |
+| edge_arm            | Number of out-of-AR edges                                          |
+| corner_orbit_split  | Number of bad corners in the HTR orbit with the fewest bad corners |
+| corner_orbit_parity | 0 = 4a corners, 1 = 4b corners                                     |
+| n_ppairs            | Number of top pseudo-pairs                                         |
+| n_spairs            | Number of side pairs                                               |
 
 The feature combinations are "optimal" in the sense that they were are the result of training a decision tree.
 At each level, the training algorithm chooses the feature that does the best job of separating the 
 sub-7 solutions from the 7-plus solutions.
-
-Results:
 
 ## 0c
 - [0c0e](0c0e_p_sub7.html)

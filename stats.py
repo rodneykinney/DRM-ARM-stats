@@ -57,15 +57,12 @@ def get_drm(co, eo):
 
 def get_arm(co, eo):
     drm_c, drm_e = get_drm(co, eo)
-    c_arm = sum(int(co[i] == '1') for i in (1, 3, 4, 6)) + \
+    arm_c = sum(int(co[i] == '1') for i in (1, 3, 4, 6)) + \
             sum(int(co[i] == '2') for i in (0, 2, 5, 7))
-    e_arm = sum(int(eo[i] == '1') for i in (0, 2, 8, 10))
-    if drm_c - c_arm < c_arm:
-        c_arm = drm_c - c_arm
-        e_arm = drm_e - e_arm
-    elif drm_c - c_arm == c_arm and drm_e - e_arm < e_arm:
-        e_arm = drm_e - e_arm
-    return c_arm, e_arm
+    arm_c = min(arm_c, drm_c - arm_c)
+    arm_e = sum(int(eo[i] == '1') for i in (0, 2, 8, 10))
+    arm_e = min(arm_e, drm_e-arm_e)
+    return arm_c, arm_e
 
 
 # Orbit 1 : ULF, URB, DRF, DLB
