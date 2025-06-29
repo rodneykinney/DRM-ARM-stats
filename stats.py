@@ -59,6 +59,7 @@ def get_arm(co, eo):
     drm_c, drm_e = get_drm(co, eo)
     arm_c = sum(int(co[i] == '1') for i in (1, 3, 4, 6)) + \
             sum(int(co[i] == '2') for i in (0, 2, 5, 7))
+    arm_c = min(arm_c, drm_c - arm_c)
     arm_e = sum(int(eo[i] == '1') for i in (0, 2, 8, 10))
     return arm_c, arm_e
 
@@ -171,7 +172,6 @@ def pattern(sol: str) -> str:
 def select(corner_case: str,
            n_bad_edges: int,
            edge_arm: Optional[int] = None,
-           corner_arm: Optional[int] = None,
            n_pairs: Optional[int] = None,
            n_fake_pairs: Optional[int] = None,
            n_side_pairs: Optional[int] = None,
@@ -197,8 +197,7 @@ def select(corner_case: str,
         corner_orbit_split = 1
     elif orbit_case == "d":
         corner_orbit_split = 0
-    if corner_arm is None:
-        corner_arm = slice(None)
+    corner_arm = slice(None)
     if m.group(3):
         corner_arm = int(m.group(3))
         if n_bad_corners - corner_arm != corner_arm:
