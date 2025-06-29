@@ -104,10 +104,10 @@
                   Probability of sub-7 DR, given corner/edge configuration counts
                 </div>
                 
-                <div class="tree-container" style="width: 632.4px; height: 338.25px;">
+                <div class="tree-container" style="width: 918.7px; height: 482.75px;">
                     
         <div id="node_1" class="tree-node non-leaf-node" 
-             style="left: 20.0px; top: 20px; width: 592.4px; height: 298.25px; 
+             style="left: 20.0px; top: 20px; width: 878.7px; height: 442.75px; 
                     background-color: #00dd00;">
             <div class="node-content" style="font-size: 16.0px; color: black; height: 144.0px;">
                 All<br>100.0% of cases (56/56)<br>p_sub7=71.4%<br>best: R U L2 U' R (5)<br>worst: R U L2 U' R U L2 (7)
@@ -118,19 +118,31 @@
             <div class="node-content" style="font-size: 14.5px; color: black; height: 134.25px;">
                 corner_orbit_split = 0<br>42.9% of cases (24/56)<br>p_sub7=100.0%<br>best: R U L2 U' R (5)<br>worst: R U L2 U' R U2 (6)
             </div></div>
-        <div id="node_3" class="tree-node leaf-node" 
-             style="left: 277.5px; top: 154.0px; width: 274.9px; height: 134.25px; 
+        <div id="node_3" class="tree-node non-leaf-node" 
+             style="left: 277.5px; top: 154.0px; width: 561.2px; height: 278.75px; 
                     background-color: #00dd00;">
             <div class="node-content" style="font-size: 14.5px; color: black; height: 134.25px;">
                 corner_orbit_split >= 1<br>57.1% of cases (32/56)<br>p_sub7=50.0%<br>best: R U L2 U' R U (6)<br>worst: R U L2 U' R U L2 (7)
-            </div></div></div>
+            </div>
+        <div id="node_4" class="tree-node leaf-node" 
+             style="left: 10px; top: 144.25px; width: 250.6px; height: 124.50000000000001px; 
+                    background-color: #00dd00;">
+            <div class="node-content" style="font-size: 13.0px; color: black; height: 124.50000000000001px;">
+                corner_arm <= 1<br>28.6% of cases (16/56)<br>p_sub7=50.0%<br>best: R U' L2 U R' D' (6)<br>worst: R U F2 U F2 U' R (7)
+            </div></div>
+        <div id="node_5" class="tree-node leaf-node" 
+             style="left: 270.6px; top: 144.25px; width: 250.6px; height: 124.50000000000001px; 
+                    background-color: #00dd00;">
+            <div class="node-content" style="font-size: 13.0px; color: black; height: 124.50000000000001px;">
+                corner_arm >= 2<br>28.6% of cases (16/56)<br>p_sub7=50.0%<br>best: R U L2 U' R U (6)<br>worst: R U L2 U' R U L2 (7)
+            </div></div></div></div>
                 </div>
                 
                 <div class="info">
                     <ul>
                       <li><b>n_pairs</b>: Number of top pairs
-                      <li><b>n_ppairs</b>: Number of top pseudo-pairs
-                      <li><b>n_spairs</b>: Number of side pairs
+                      <li><b>n_fake_pairs</b>: Number of top fake pairs
+                      <li><b>n_side_pairs</b>: Number of side pairs
                       <li><b>corner_orbit_split</b>: Number of bad corners in the HTR orbit with the fewest bad corners
                     </ul>
                 </div>

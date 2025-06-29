@@ -171,6 +171,7 @@ def pattern(sol: str) -> str:
 def select(corner_case: str,
            n_bad_edges: int,
            edge_arm: Optional[int] = None,
+           corner_arm: Optional[int] = None,
            n_pairs: Optional[int] = None,
            n_fake_pairs: Optional[int] = None,
            n_side_pairs: Optional[int] = None,
@@ -196,7 +197,8 @@ def select(corner_case: str,
         corner_orbit_split = 1
     elif orbit_case == "d":
         corner_orbit_split = 0
-    corner_arm = slice(None)
+    if corner_arm is None:
+        corner_arm = slice(None)
     if m.group(3):
         corner_arm = int(m.group(3))
         if n_bad_corners - corner_arm != corner_arm:
@@ -383,8 +385,8 @@ def columns(field, values, **kwargs):
 if __name__ == "__main__":
     # bucket, sol = Stats.parse_line("141136,02110101,100010110000,6,R U' R' L U' L'")
 
-    nc = 4
+    nc = 2
     ne = 4
     stats = Stats.load(f"{nc}c{ne}e.csv")
-    stats.print([("corner_case", ["4a-0","4a-2","4b-0","4b-2","4c-1","4d-2"]), ("n_bad_edges", [ne])], ("n_pairs", list(range(ne+1))), stats.p_sub(7))
+    stats.print([("corner_case", ["2c"]), ("n_bad_edges", [ne]), ("n_fake_pairs",[0,1,2]), ("edge_arm",[0,1,2])], ("n_pairs", list(range(ne+1))), stats.p_sub(7))
     #stats.print([("corner_case", ["3c"]), ("n_bad_edges", [4]), ("n_fake_pairs", [0,1,2])], ("n_pairs", [0,1,2]), stats.p_sub(7, None))
