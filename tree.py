@@ -154,8 +154,8 @@ def load(filename: str = "full_data.csv") -> Tuple[Dict[Tuple[int, int], List[Tu
                 bucket.edge_arm,
                 bucket.corner_orbit_split,
                 bucket.corner_orbit_parity,
-                bucket.n_ppairs,
-                bucket.n_spairs,
+                bucket.n_fake_pairs,
+                bucket.n_side_pairs,
             ]
             data_by_drm[(bucket.n_bad_corners, bucket.n_bad_edges)].append((features,bucket.move_count < 7))
             solutions.append(sol)
@@ -171,8 +171,8 @@ def main(drm_c, drm_e):
         "edge_arm",
         "corner_orbit_split",
         "corner_orbit_parity",
-        "n_ppairs",
-        "n_spairs",
+        "n_fake_pairs",
+        "n_side_pairs",
     ]
     y = np.array([1 if l else 0 for _,l in xy])
     X = np.array([np.array(x) for x,_ in xy])

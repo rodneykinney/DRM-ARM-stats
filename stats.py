@@ -3,7 +3,7 @@ import sys
 from collections import defaultdict, Counter, namedtuple
 from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Optional, Callable
-from itertools import chain
+from itertools import chain, product
 import random
 
 import numpy as np
@@ -18,8 +18,8 @@ Bucket = namedtuple(
         "edge_arm",
         "n_bad_edges",
         "n_pairs",
-        "n_ppairs",
-        "n_spairs",
+        "n_fake_pairs",
+        "n_side_pairs",
         "move_count",
     ]
 )
@@ -34,8 +34,8 @@ Selection = namedtuple(
         "edge_arm",
         "n_bad_edges",
         "n_pairs",
-        "n_ppairs",
-        "n_spairs",
+        "n_fake_pairs",
+        "n_side_pairs",
         "move_count",
     ]
 )
@@ -59,9 +59,7 @@ def get_arm(co, eo):
     drm_c, drm_e = get_drm(co, eo)
     arm_c = sum(int(co[i] == '1') for i in (1, 3, 4, 6)) + \
             sum(int(co[i] == '2') for i in (0, 2, 5, 7))
-    arm_c = min(arm_c, drm_c - arm_c)
     arm_e = sum(int(eo[i] == '1') for i in (0, 2, 8, 10))
-    arm_e = min(arm_e, drm_e-arm_e)
     return arm_c, arm_e
 
 
@@ -174,9 +172,9 @@ def select(corner_case: str,
            n_bad_edges: int,
            edge_arm: Optional[int] = None,
            n_pairs: Optional[int] = None,
-           n_ppairs: Optional[int] = None,
-           n_spairs: Optional[int] = None,
-           max_move_count: Optional[int] = None
+           n_fake_pairs: Optional[int] = None,
+           n_side_pairs: Optional[int] = None,
+           max_move_count: Optional[int] = None,
            ):
     m = re.search(r"^([02345678])([abcd])(?:-([01234]))?$", corner_case)
     n_bad_corners = int(m.group(1))
@@ -201,14 +199,16 @@ def select(corner_case: str,
     corner_arm = slice(None)
     if m.group(3):
         corner_arm = int(m.group(3))
+        if n_bad_corners - corner_arm != corner_arm:
+            corner_arm = [corner_arm, n_bad_corners-corner_arm]
     if edge_arm is None:
         edge_arm = slice(None)
     if n_pairs is None:
         n_pairs = slice(None)
-    if n_ppairs is None:
-        n_ppairs = slice(None)
-    if n_spairs is None:
-        n_spairs = slice(None)
+    if n_fake_pairs is None:
+        n_fake_pairs = slice(None)
+    if n_side_pairs is None:
+        n_side_pairs = slice(None)
     move_count = slice(None)
     if max_move_count is not None:
         move_count = slice(0, max_move_count + 1)
@@ -220,9 +220,9 @@ def select(corner_case: str,
         edge_arm,
         n_bad_edges,
         n_pairs,
-        n_ppairs,
-        n_spairs,
-        move_count
+        n_fake_pairs,
+        n_side_pairs,
+        move_count,
     )
 
 
@@ -246,7 +246,7 @@ def trigger(sol: str, default_drm) -> Tuple[str, bool]:
 bad_corner_cases = 9
 orbit_split_cases = 5
 orbit_parity_cases = 2
-corner_arm_cases = 5
+corner_arm_cases = 9
 edge_arm_cases = 5
 bad_edge_cases = 9
 max_pairs = 9
@@ -267,7 +267,8 @@ class Stats:
         max_pairs,
         max_pseudo_pairs,
         max_side_pairs,
-        max_move_count),
+        max_move_count,
+    ),
         dtype = [("n", int),("solutions", object)]
     )
 
@@ -300,8 +301,8 @@ class Stats:
             total = np.sum(self.counts[selection]["n"])
             if total == 0:
                 return "-"
-            with_max_move_count = selection[:-1] + (slice(0, n),)
-            return np.sum(self.counts[with_max_move_count]["n"]) / total
+            selection = selection[:-1] + (slice(0,n),)
+            return np.sum(self.counts[selection]["n"]) / total
         return f
 
     def solutions(self, selection: Selection):
@@ -310,17 +311,19 @@ class Stats:
     def n_cases(self, selection: Selection):
         return np.sum(self.counts[selection]["n"])
 
-    def print(self, corner_cases: List[List[str]], edges: List, columns: Callable, quantity: Callable):
-        header = "DRM\tCorner Variant\t0\t1\t2\t3\t4\t5\t6\t7\t8"
+    def print(self, rows: List[Tuple[str, List[int | str]]], columns: Tuple[str, List[int]], quantity: Callable):
+        row_names = [r[0] for r in rows]
+        header = f"{'\t'.join(row_names)}\t{columns[0]}"
         print(header)
-        for drm_cases in corner_cases:
-            for edges in edges:
-                for case in drm_cases:
-                    drm = f"{drm_cases[0][:1]}c{edges}e"
-                    selections = columns(case, edges)
-                    quantities = [str(quantity(s)) for s in selections]
-                    q = '\t'.join(quantities)
-                    print(f"{drm}\t{case}\t{q}")
+        header = f"{'\t'.join(' ' *len(rows))}\t{'\t'.join(str(v) for v in columns[1])}"
+        print(header)
+        for row_values in product(*[v[1] for v in rows]):
+            print("\t".join(str(v) for v in row_values),end="\t")
+            row_features = dict(zip(row_names, row_values))
+            col_features = [{columns[0]:v} for v in columns[1]]
+            selections = [select(**(row_features | col_f)) for col_f in col_features]
+            quantities = [str(quantity(s)) for s in selections]
+            print("\t".join(quantities))
 
     @staticmethod
     def parse_line(line) -> Tuple[Bucket, str]:
@@ -333,18 +336,22 @@ class Stats:
             if min(*(get_LR_splits(co) + get_UD_splits(co))) == 1:
                 corner_orbit_parity = 1
         corner_arm, edge_arm = get_arm(co, eo)
-        n_pairs, n_ppairs, n_spairs = get_pair_counts(co, eo)
-        key = Bucket(n_bad_corners=n_bad_corners,
+        n_pairs, n_fake_pairs, n_side_pairs = get_pair_counts(co, eo)
+        drm = f"{n_bad_corners}c{n_bad_edges}e"
+
+        rzp, dr_breaking = trigger(sol, drm)
+        bucket = Bucket(n_bad_corners=n_bad_corners,
                      corner_orbit_split=corner_orbit_split,
                      corner_orbit_parity=corner_orbit_parity,
                      corner_arm=corner_arm,
                      edge_arm=edge_arm,
                      n_bad_edges=n_bad_edges,
                      n_pairs=n_pairs,
-                     n_ppairs=n_ppairs,
-                     n_spairs=n_spairs,
-                     move_count=move_count)
-        return key, sol
+                     n_fake_pairs=n_fake_pairs,
+                     n_side_pairs=n_side_pairs,
+                     move_count=move_count,
+                     )
+        return bucket, sol
 
     @staticmethod
     def load(filename="full_data.csv") -> "Stats":
@@ -368,24 +375,16 @@ class Stats:
 ALL_CORNER_CASES = [["0c-0"],["2c-0","2c-1"],["3c-0","3c-1"],["4a-0","4a-2","4b-0","4b-2","4c-1","4d-2"],["5a-1","5a-2","5b-0","5b-2"],["6a-0","6a-2","6a-3","6b-1","6b-2","6b-3"],["7c-1","7c-2","7c-3"],["8c-0","8c-2","8c-3","8c-4"]]
 REDUCED_CORNER_CASES = [["0c"],["2c"],["3c"],["4a-0","4a-2","4b-0","4b-2","4c-1","4d-2"],["5c"],["6c"],["7c"],["8c"]]
 
-def by_pair_count(case: str, edges:int):
-    return [select(case, edges, n_pairs=np) for np in range(0,9)]
-
 def columns(field, values, **kwargs):
     def f(case: str, edges: int):
         return [select(case, edges, **(kwargs | {field: v})) for v in values]
     return f
 
-def by_pairs(**kwargs):
-    def f(case: str, edges:int):
-        return [select(case, edges, n_pairs=np, **kwargs) for np in range(0,9)]
-    return f
-
-def by_edge_arm(case: str, edges:int):
-    return [select(case, edges, edge_arm=ne) for ne in range(0,int(edges/2)+1)]
-
 if __name__ == "__main__":
     # bucket, sol = Stats.parse_line("141136,02110101,100010110000,6,R U' R' L U' L'")
 
-    stats = Stats.load()
-    stats.print(ALL_CORNER_CASES, [0,2,4,6,8], by_pair_count, stats.p_sub(7))
+    nc = 4
+    ne = 4
+    stats = Stats.load(f"{nc}c{ne}e.csv")
+    stats.print([("corner_case", ["4a-0","4a-2","4b-0","4b-2","4c-1","4d-2"]), ("n_bad_edges", [ne])], ("n_pairs", list(range(ne+1))), stats.p_sub(7))
+    #stats.print([("corner_case", ["3c"]), ("n_bad_edges", [4]), ("n_fake_pairs", [0,1,2])], ("n_pairs", [0,1,2]), stats.p_sub(7, None))
