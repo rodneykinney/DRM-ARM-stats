@@ -268,7 +268,7 @@ class BinaryTreeHTMLGenerator:
             return 0
         return 1 + max(self.calculate_depth(node.left), self.calculate_depth(node.right))
 
-    def generate_html(self, title="Binary Tree Visualization"):
+    def generate_html(self, title):
         """Generate complete HTML document"""
         if not self.root:
             return "<html><body><h1>No tree to display</h1></body></html>"
@@ -320,8 +320,8 @@ class BinaryTreeHTMLGenerator:
                 <div class="info">
                     <ul>
                       <li><b>n_pairs</b>: Number of top pairs
-                      <li><b>n_ppairs</b>: Number of top pseudo-pairs
-                      <li><b>n_spairs</b>: Number of side pairs
+                      <li><b>n_fake_pairs</b>: Number of top fake pairs
+                      <li><b>n_side_pairs</b>: Number of side pairs
                       <li><b>corner_orbit_split</b>: Number of bad corners in the HTR orbit with the fewest bad corners
                     </ul>
                 </div>
@@ -332,7 +332,7 @@ class BinaryTreeHTMLGenerator:
 
         return html
 
-    def save_and_open(self, filename=None, title="Binary Tree Visualization"):
+    def save_and_open(self, title, filename=None):
         """Generate HTML and open it in the default browser"""
         html_content = self.generate_html(title)
 

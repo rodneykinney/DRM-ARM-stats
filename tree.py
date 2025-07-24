@@ -1,14 +1,16 @@
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import precision_score, recall_score, classification_report
-from sklearn.datasets import make_classification
+
+import stats
 from stats import Stats, Selection
 from typing import Dict, Tuple, List
 from collections import defaultdict
 import sys
 import warnings
+
 warnings.filterwarnings('ignore')
 import tree_viz
+
 
 class TargetMetricDecisionTree:
     def __init__(self, max_depth=20):
@@ -83,7 +85,7 @@ class TargetMetricDecisionTree:
 
         return np.array(node_samples)
 
-    def visualize(self, title, metric, X, y, solutions: List[str]):
+    def visualize(self, metric, X, y, solutions: List[str]):
         tree_structure = self.model.tree_
         feature_names = self.feature_names
 
@@ -107,8 +109,8 @@ class TargetMetricDecisionTree:
             elif positive_fraction >= .10:
                 color = "#ddffdd"
 
-            best,lowest = "",99
-            worst,highest = "",0
+            best, lowest = "", 99
+            worst, highest = "", 0
             for i in node_sample_indices:
                 move_count = len(solutions[i].split(" "))
                 if move_count < lowest:
@@ -119,7 +121,7 @@ class TargetMetricDecisionTree:
                     worst = solutions[i]
 
             node = tree_viz.TreeNode(
-                text=f"{condition}\n{100 * fraction_of_cases:0.1f}% of cases ({n_samples}/{len(y)})\n{metric}={100*positive_fraction:0.1f}%\nbest: {best} ({lowest})\nworst: {worst} ({highest})",
+                text=f"{condition}\n{100 * fraction_of_cases:0.1f}% of cases ({n_samples}/{len(y)})\n{metric}={100 * positive_fraction:0.1f}%\nbest: {best} ({lowest})\nworst: {worst} ({highest})",
                 style={"color": color}
             )
 
@@ -130,59 +132,72 @@ class TargetMetricDecisionTree:
 
                 # Left child (condition is True)
                 left_child = tree_structure.children_left[node_id]
-                node.left = build_node(left_child, f"{feature_name} {'=' if th == 0 else '<='} {th}")
+                node.left = build_node(left_child,
+                                       f"{feature_name} {'=' if th == 0 else '<='} {th}")
 
                 # Right child (condition is False)
                 right_child = tree_structure.children_right[node_id]
-                node.right = build_node(right_child, f"{feature_name} >= {th+1}")
+                node.right = build_node(right_child, f"{feature_name} >= {th + 1}")
 
             return node
 
-        root = build_node(0,"All")
-        tree_viz.BinaryTreeHTMLGenerator(root).save_and_open(title=title, filename=f"drm_trees/{drm_c}c{drm_e}e_{metric}.html")
+        root = build_node(0, "All")
+        return tree_viz.BinaryTreeHTMLGenerator(root)
 
 
-def load(filename: str = "full_data.csv") -> Tuple[Dict[Tuple[int, int], List[Tuple[List, bool]]], List[str]]:
+def load(filename: str = "full_data.csv") -> Tuple[
+    Dict[Tuple[str, int], List[Tuple[List, bool]]], List[str]]:
     data_by_drm = defaultdict(list)
     solutions = []
     with open(filename, "r", encoding="utf-8") as file:
         for line in file:
             bucket, sol = Stats.parse_line(line)
             features = [
-                bucket.n_pairs,
                 bucket.corner_arm,
                 bucket.edge_arm,
                 bucket.corner_orbit_split,
                 bucket.corner_orbit_parity,
-                bucket.n_ppairs,
-                bucket.n_spairs,
+                bucket.n_fake_pairs,
+                bucket.n_side_pairs,
+                bucket.n_pairs,
+                bucket.corner_arm_split,
+                bucket.edge_arm_split,
+                # bucket.n_fake_pairs,
+                # bucket.n_side_pairs,
             ]
-            data_by_drm[(bucket.n_bad_corners, bucket.n_bad_edges)].append((features,bucket.move_count < 7))
+            corner_case = stats.corner_case_name(bucket.n_bad_corners, bucket.corner_orbit_split,
+                                                 bucket.corner_orbit_parity)
+            data_by_drm[corner_case].append((features, bucket.move_count < 7))
             solutions.append(sol)
     return data_by_drm, solutions
 
 
 def main(drm_c, drm_e):
     data, solutions = load(f"{drm_c}c{drm_e}e.csv")
-    xy = data[(drm_c, drm_e)]
-    feature_names = [
-        "n_pairs",
-        "corner_arm",
-        "edge_arm",
-        "corner_orbit_split",
-        "corner_orbit_parity",
-        "n_ppairs",
-        "n_spairs",
-    ]
-    y = np.array([1 if l else 0 for _,l in xy])
-    X = np.array([np.array(x) for x,_ in xy])
+    for corner_case, xy in data.items():
+        title=f"{corner_case}{drm_e}e"
+        print(f"Training decision tree for {title}")
+        feature_names = [
+            "n_pairs",
+            "corner_arm",
+            "edge_arm",
+            "corner_orbit_split",
+            "corner_orbit_parity",
+            "n_fake_pairs",
+            "n_side_pairs",
+        ]
+        y = np.array([1 if l else 0 for _, l in xy])
+        X = np.array([np.array(x) for x, _ in xy])
 
-    # Initialize and train the model
-    trainer = TargetMetricDecisionTree(max_depth=6)
+        # Initialize and train the model
+        trainer = TargetMetricDecisionTree(max_depth=6)
 
-    # Train to target metrics
-    trainer.train_to_target(X, y, feature_names)
-    trainer.visualize(f"{drm_c}c{drm_e}e", "p_sub7", X, y, solutions)
+        # Train to target metrics
+        trainer.train_to_target(X, y, feature_names)
+        metric = "p_sub7"
+        viz = trainer.visualize(metric, X, y, solutions)
+        viz.save_and_open(title, filename=f"drm_trees/{title}_{metric}.html")
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
