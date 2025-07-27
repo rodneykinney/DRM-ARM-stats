@@ -10,24 +10,6 @@ import numpy as np
 
 import vfmc_core
 
-Bucket = namedtuple(
-    "Bucket",
-    [
-        "n_bad_corners",
-        "corner_orbit_split",
-        "corner_orbit_parity",
-        "corner_arm",
-#        "corner_arm_split",
-        "edge_arm",
-#        "edge_arm_split",
-        "n_bad_edges",
-        "n_pairs",
-        # "n_fake_pairs",
-        # "n_side_pairs",
-        "move_count",
-    ]
-)
-
 Selection = namedtuple(
     "Selection",
     [
@@ -40,8 +22,9 @@ Selection = namedtuple(
 #        "edge_arm_split",
         "n_bad_edges",
         "n_pairs",
-        # "n_fake_pairs",
-        # "n_side_pairs",
+        "n_fake_pairs",
+        "n_side_pairs",
+        "is_simple",
         "move_count",
     ]
 )
@@ -178,14 +161,15 @@ def pattern(sol: str) -> str:
 
 def select(corner_case: str,
            n_bad_edges: int,
-           corner_arm: Optional[int] = None,
-           corner_arm_split: Optional[int] = None,
-           edge_arm: Optional[int] = None,
-           edge_arm_split: Optional[int] = None,
-           n_pairs: Optional[int] = None,
-           n_fake_pairs: Optional[int] = None,
-           n_side_pairs: Optional[int] = None,
+           corner_arm: Optional[int] = slice(None),
+           corner_arm_split: Optional[int] = slice(None),
+           edge_arm: Optional[int] = slice(None),
+           edge_arm_split: Optional[int] = slice(None),
+           n_pairs: Optional[int] = slice(None),
+           n_fake_pairs: Optional[int] = slice(None),
+           n_side_pairs: Optional[int] = slice(None),
            max_move_count: Optional[int] = None,
+           is_simple: Optional[int] = slice(None),
            ):
     m = re.search(r"^([02345678])([abcd])(?:-([01234]))?$", corner_case)
     n_bad_corners = int(m.group(1))
@@ -207,27 +191,17 @@ def select(corner_case: str,
         corner_orbit_split = 1
     elif orbit_case == "d":
         corner_orbit_split = 0
-    if corner_arm is None:
-        corner_arm = slice(None)
+    if corner_arm == slice(None):
         if m.group(3):
             corner_arm = int(m.group(3))
             if n_bad_corners - corner_arm != corner_arm:
                 corner_arm = [corner_arm, n_bad_corners-corner_arm]
-    if corner_arm_split is None:
-        corner_arm_split = slice(None)
-    if edge_arm is None:
-        edge_arm = slice(None)
-    if edge_arm_split is None:
-        edge_arm_split = slice(None)
-    if n_pairs is None:
-        n_pairs = slice(None)
-    if n_fake_pairs is None:
-        n_fake_pairs = slice(None)
-    if n_side_pairs is None:
-        n_side_pairs = slice(None)
-    move_count = slice(None)
-    if max_move_count is not None:
+    if max_move_count is None:
+        move_count = slice(None)
+    elif type(max_move_count) is int:
         move_count = slice(0, max_move_count + 1)
+    else:
+        move_count = max_move_count
     return Selection(
         n_bad_corners,
         corner_orbit_split,
@@ -238,13 +212,14 @@ def select(corner_case: str,
         # edge_arm_split,
         n_bad_edges,
         n_pairs,
-        # n_fake_pairs,
-        # n_side_pairs,
+        n_fake_pairs,
+        n_side_pairs,
+        is_simple,
         move_count,
     )
 
 
-def trigger(generator: str, default_drm) -> Tuple[str, bool, int]:
+def trigger(generator: str, default_drm) -> Tuple[str, bool, int, int]:
     sol = generator.replace("'", "")
     sol = re.sub("D", "U", sol)
     p = "".join(reversed(sol.split(' ')))
@@ -263,23 +238,31 @@ def trigger(generator: str, default_drm) -> Tuple[str, bool, int]:
     setup = re.sub(f"{trigger_moves}$", "", p)
     off_axis_count = sum(1 for m in setup if m in ("L", "R"))
     dr_breaking = (trigger_drm in (default_drm, "AR") and off_axis_count > 0) or off_axis_count > 1
-    return trigger_drm, dr_breaking, len(trigger_moves)
+    return trigger_drm, dr_breaking, len(trigger_moves), off_axis_count
 
-def stages(generator: str, default_drm) -> List[str]:
-    trigger_drm, dr_breaking, trigger_move_count = trigger(generator, default_drm)
+def ar_setup(generator: str, default_drm: str) -> List[str]:
+    trigger_drm, dr_breaking, _, _ = trigger(generator, default_drm)
+    if trigger_drm == default_drm and not dr_breaking:
+        return ["-"]
+    u_count = sum(1 for s in generator.split(" ") if s in {"U","U'","D","D'"})
+    return "U "*u_count
+
+
+def shifts(generator: str, default_drm) -> List[str]:
+    trigger_drm, dr_breaking, trigger_move_count, _ = trigger(generator, default_drm)
     if not dr_breaking:
         return [] if trigger_drm == default_drm else [trigger_drm]
     else:
-        stages = [trigger_drm]
+        shifts = [trigger_drm]
         cube = vfmc_core.Cube("")
         step = vfmc_core.StepInfo("dr","ud")
         for i, move in enumerate(generator.split(" ")):
             cube.apply(vfmc_core.Algorithm(move))
             if i >= trigger_move_count and move in {"R","R'","L","L'"}:
-                stages.append(step.case_name(cube))
-        stages = stages[:-1]
-        stages.reverse()
-        return stages
+                shifts.append(step.case_name(cube))
+        shifts = shifts[:-1]
+        shifts.reverse()
+        return shifts
 
 
 bad_corner_cases = 9
@@ -291,25 +274,26 @@ edge_arm_cases = 5
 #edge_arm_split_cases=3
 bad_edge_cases = 9
 max_pairs = 9
-# max_fake_pairs = 9
-# max_side_pairs = 9
+max_fake_pairs = 9
+max_side_pairs = 9
 max_move_count = 11
 
 
 class Stats:
     def __init__(self, n_bad_corners, n_bad_edges):
         self.counts = np.zeros((
-            bad_corner_cases,
+            n_bad_corners+1, #bad_corner_cases
             orbit_split_cases,
             orbit_parity_cases,
-            corner_arm_cases,
+            n_bad_corners+1, # corner_arm_cases
             # corner_arm_split_cases,
             edge_arm_cases,
             # edge_arm_split_cases,
             bad_edge_cases,
-            max_pairs,
-            # max_fake_pairs,
-            # max_side_pairs,
+            n_bad_edges+1, #max_pairs,
+            n_bad_edges+1, #max_fake_pairs,
+            n_bad_edges+1, #max_side_pairs,
+            2, # is_simple
             max_move_count,
         ),
             dtype = [("n", int),("solutions", object)]
@@ -322,30 +306,30 @@ class Stats:
         return sorted([(p, n / total) for p, n in counts.items()], key=lambda x: -x[1])
 
     def trigger_counts(self, drm, selection):
-        triggers = [(trig, dr_breaking) for s in self.solutions(selection) for trig, dr_breaking, _ in [trigger(s, drm)] ]
+        triggers = [(trig, dr_breaking) for s in self.solutions(selection) for trig, dr_breaking, _, _ in [trigger(s, drm)] ]
         counts = dict(Counter(triggers).items())
         total = sum(n for _, n in counts.items())
         header = ["trigger","DR-preserving","example","DR-breaking","example"]
         table = []
         for trig in set((t for t,_  in triggers)):
-            l = [s for s in self.solutions(selection) for t, drb, _ in [trigger(s, drm)] if (t, drb) == (trig, False)]
+            l = [s for s in self.solutions(selection) for t, drb, _, _ in [trigger(s, drm)] if (t, drb) == (trig, False)]
             example = f'"{random.choice(l)}"' if l else ""
-            l = [s for s in self.solutions(selection) for t, drb, _ in [trigger(s, drm)] if (t, drb) == (trig, True)]
+            l = [s for s in self.solutions(selection) for t, drb, _, _ in [trigger(s, drm)] if (t, drb) == (trig, True)]
             example_drb = f'"{random.choice(l)}"' if l else ""
             table.append((trig, counts.get((trig, False), 0) / total, example,
                           counts.get((trig, True), 0) / total, example_drb))
         table.sort(key=lambda x: -x[1])
         return [header] + table
 
-    def stage_counts(self, drm, selection):
-        stage = [" ".join(stages(sol, drm)) for sol in self.solutions(selection)]
-        counts = dict(Counter(stage).items())
+    def shift_counts(self, drm, selection):
+        shift_l = [" ".join(shifts(sol, drm)) for sol in self.solutions(selection)]
+        counts = dict(Counter(shift_l).items())
         total = sum(n for _, n in counts.items())
         pass
-        header = ["Switch", "Frequency", "Generator"]
+        header = ["Switch", "Frequency", "Generators"]
         table = []
-        for st in set(stage):
-            l = [s for s in self.solutions(selection) if " ".join(stages(s, drm)) == st]
+        for st in set(shift_l):
+            l = [s for s in self.solutions(selection) if " ".join(shifts(s, drm)) == st]
             examples = ""
             if l:
                 random.shuffle(l)
@@ -389,7 +373,7 @@ class Stats:
             print("\t".join(quantities))
 
     @staticmethod
-    def parse_line(line) -> Tuple[Bucket, str]:
+    def parse_line(line) -> Tuple[Selection, str]:
         index, co, eo, move_count, sol = unpack(line)
         n_bad_corners, n_bad_edges = get_drm(co, eo)
         a, b = get_orbit_splits(co)
@@ -402,8 +386,9 @@ class Stats:
         n_pairs, n_fake_pairs, n_side_pairs = get_pair_counts(co, eo)
         drm = f"{n_bad_corners}c{n_bad_edges}e"
 
-        # rzp, dr_breaking = trigger(sol, drm)
-        bucket = Bucket(n_bad_corners=n_bad_corners,
+        trigger_drm, dr_breaking, _, off_axis_count = trigger(sol, drm)
+        is_simple = 1 if (trigger_drm == drm and off_axis_count > 0) or off_axis_count > 1 else 0
+        bucket = Selection(n_bad_corners=n_bad_corners,
                      corner_orbit_split=corner_orbit_split,
                      corner_orbit_parity=corner_orbit_parity,
                      corner_arm=arm_c_l+arm_c_r,
@@ -412,9 +397,10 @@ class Stats:
 #                     edge_arm_split = min(arm_e_u, arm_e_d),
                      n_bad_edges=n_bad_edges,
                      n_pairs=n_pairs,
-                     # n_fake_pairs=n_fake_pairs,
-                     # n_side_pairs=n_side_pairs,
+                     n_fake_pairs=n_fake_pairs,
+                     n_side_pairs=n_side_pairs,
                      move_count=move_count,
+                     is_simple=is_simple
                      )
         return bucket, sol
 
@@ -464,17 +450,40 @@ def columns(field, values, **kwargs):
         return [select(case, edges, **(kwargs | {field: v})) for v in values]
     return f
 
-if __name__ == "__main__":
-    # sol = "R D' R' L' D L F2"
-    # sol_stages = stages(sol)
-    # print(sol_stages)
-    trigger("L U' R2 L U", "3c2e")
-
-    nc = int(sys.argv[1])
-    ne = int(sys.argv[2])
+def print_ar_setups(nc, ne, nmoves):
     stats = Stats.load(nc, ne, f"{nc}c{ne}e.csv")
-    def print_stages(case_name, selection: Selection):
-        table = stats.stage_counts(f"{nc}c{ne}e", selection)
+    drm = f"{nc}c{ne}e"
+    def print_row(case_name, selection: Selection):
+        solutions = stats.solutions(selection)
+        setups = [" ".join(ar_setup(sol, drm)) for sol in solutions]
+        counts = Counter(setups)
+        total = sum(n for _, n in counts.items())
+        l = list(counts.items())
+        l.sort(key=lambda t: -t[1])
+        for p, n in l:
+            sols = [s for s in solutions if " ".join(ar_setup(s, drm)) == p]
+            random.shuffle(sols)
+            print("{}\t{}\t{}".format(p, n/total, "\t".join(sols[:5])))
+    combined = Selection(
+        n_bad_corners=nc,
+        n_bad_edges=ne,
+        move_count=slice(0, nmoves),
+        corner_orbit_split=slice(None),
+        corner_orbit_parity=slice(None),
+        corner_arm=slice(None),
+        edge_arm=slice(None),
+        n_pairs=slice(None),
+        n_fake_pairs=slice(None),
+        n_side_pairs=slice(None),
+        is_simple=slice(None),
+    )
+    print_row(drm, combined)
+
+
+def print_drm_shifts(nc, ne, nmoves):
+    stats = Stats.load(nc, ne, f"{nc}c{ne}e.csv")
+    def print_row(case_name, selection: Selection):
+        table = stats.shift_counts(f"{nc}c{ne}e", selection)
         print(case_name)
         for row in table:
             print("\t".join((str(s) or "-" for s in row)))
@@ -482,26 +491,35 @@ if __name__ == "__main__":
     combined = Selection(
         n_bad_corners=nc,
         n_bad_edges=ne,
+        move_count=slice(0, nmoves),
         corner_orbit_split=slice(None),
         corner_orbit_parity=slice(None),
         corner_arm=slice(None),
         edge_arm=slice(None),
         n_pairs=slice(None),
-        move_count=slice(0, 7),
+        n_fake_pairs=slice(None),
+        n_side_pairs=slice(None),
+        is_simple=slice(None),
     )
-    print_stages(f"{nc}c", combined)
+    print_row(f"{nc}c", combined)
 
     for case_name in ALL_CORNER_CASES[nc]:
-        selection = select(corner_case=case_name, n_bad_edges = ne, corner_arm=None, max_move_count=6)
-        print_stages(case_name, selection)
+        selection = select(corner_case=case_name, n_bad_edges = ne, max_move_count=6)
+        print_row(case_name, selection)
 
+def print_psubn(nc, ne, nmoves):
 
-    # table = stats.trigger_counts("4c4e", selection)
-    # for row in table:
-    #     print("\t".join((str(s) for s in row)))
+    stats = Stats.load(nc, ne, f"{nc}c{ne}e.csv")
 
+    rows = [("corner_case", ALL_CORNER_CASES[nc]), ("n_bad_edges", [ne]) ]
+    columns = ("n_pairs", [0,1,2,3,4])
+    stats.print(rows, columns, stats.p_sub(nmoves))
 
-    # rows = [("corner_case", ["4a","4b","4c","4d"]), ("n_bad_edges", [ne]), ("corner_arm", [0,1,2,3,4])]
-    # columns = ("edge_arm", [0,1,2,3,4])
-    # stats.print(rows, columns, stats.p_sub(7))
-    #stats.print([("corner_case", ["3c"]), ("n_bad_edges", [4]), ("n_fake_pairs", [0,1,2])], ("n_pairs", [0,1,2]), stats.p_sub(7, None))
+if __name__ == "__main__":
+    nc = int(sys.argv[1])
+    ne = int(sys.argv[2])
+    nmoves = int(sys.argv[3]) if len(sys.argv) > 3 else 7
+
+    # print_ar_setups(nc, ne, nmoves)
+    # print_drm_shifts(nc, ne, nmoves)
+    print_psubn(nc, ne, nmoves)
