@@ -3,7 +3,7 @@ from sklearn.tree import DecisionTreeClassifier
 
 import stats
 from stats import Stats, Selection
-from typing import Dict, Tuple, List
+from typing import Dict, Tuple, List, Optional
 from collections import defaultdict
 import sys
 import warnings
@@ -145,8 +145,8 @@ class TargetMetricDecisionTree:
         return tree_viz.BinaryTreeHTMLGenerator(root)
 
 
-def load(filename: str = "full_data.csv") -> Tuple[
-    Dict[Tuple[str, int], List[Tuple[List, bool]]], List[str]]:
+def load(drm_c, drm_e, easy: Optional[int] = None) -> Tuple[Dict[Tuple[str, int], List[Tuple[List, bool]]], List[str]]:
+    filename=f"{drm_c}c{drm_e}e.csv"
     data_by_drm = defaultdict(list)
     solutions = []
     with open(filename, "r", encoding="utf-8") as file:
@@ -155,34 +155,30 @@ def load(filename: str = "full_data.csv") -> Tuple[
             features = [
                 bucket.corner_arm,
                 bucket.edge_arm,
-                bucket.corner_orbit_split,
-                bucket.corner_orbit_parity,
+                bucket.n_pairs,
                 bucket.n_fake_pairs,
                 bucket.n_side_pairs,
-                bucket.n_pairs,
-                bucket.corner_arm_split,
-                bucket.edge_arm_split,
-                # bucket.n_fake_pairs,
-                # bucket.n_side_pairs,
             ]
-            corner_case = stats.corner_case_name(bucket.n_bad_corners, bucket.corner_orbit_split,
-                                                 bucket.corner_orbit_parity)
-            data_by_drm[corner_case].append((features, bucket.move_count < 7))
+            # corner_case = stats.corner_case_name(bucket.n_bad_corners, bucket.corner_orbit_split,
+            #                                      bucket.corner_orbit_parity)
+            corner_case = f"{drm_c}c"
+            label = bucket.move_count < 7
+            if easy is not None:
+                label = label and bucket.is_simple == easy
+            data_by_drm[corner_case].append((features, label))
             solutions.append(sol)
     return data_by_drm, solutions
 
 
-def main(drm_c, drm_e):
-    data, solutions = load(f"{drm_c}c{drm_e}e.csv")
+def main(drm_c, drm_e, easy):
+    data, solutions = load(drm_c, drm_e, easy)
     for corner_case, xy in data.items():
         title=f"{corner_case}{drm_e}e"
         print(f"Training decision tree for {title}")
         feature_names = [
-            "n_pairs",
             "corner_arm",
             "edge_arm",
-            "corner_orbit_split",
-            "corner_orbit_parity",
+            "n_pairs",
             "n_fake_pairs",
             "n_side_pairs",
         ]
@@ -196,14 +192,21 @@ def main(drm_c, drm_e):
         trainer.train_to_target(X, y, feature_names)
         metric = "p_sub7"
         viz = trainer.visualize(metric, X, y, solutions)
-        viz.save_and_open(title, filename=f"drm_trees/{title}_{metric}.html")
+        if easy is None:
+            filename=f"drm_trees/{title}_{metric}.html"
+        elif easy == 1:
+            filename=f"drm_trees/{title}_{metric}_easy.html"
+        else:
+            filename=f"drm_trees/{title}_{metric}_hard.html"
+        viz.save_and_open(title, filename)
 
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         drm_c = int(sys.argv[1])
         drm_e = int(sys.argv[2])
+        easy = int(sys.argv[3]) if len(sys.argv) > 3 else None
     else:
         print("Usage: python tree.py [corners] [edges]")
         sys.exit(1)
-    main(drm_c, drm_e)
+    main(drm_c, drm_e, easy)
