@@ -194,7 +194,7 @@ def print_findability(counts_data, name, **kwargs):
                      name, sel in families]
     family_counts.sort(key=lambda t: -t[1])
     for name, c, sols in family_counts:
-        print("{}\t{}\t{}".format(name, c / total, "\t".join(sols)))
+        print("{}\t{}\t{}".format(name, c / total if total else "-", "\t".join(sols)))
 
 if __name__ == "__main__":
     # nc = int(sys.argv[1])
@@ -207,8 +207,9 @@ if __name__ == "__main__":
     # for ne in [2, 4, 6, 8]:
     #     print_psub(6, ne, 10)
 
+    n_moves = int(sys.argv[1])-1 if len(sys.argv) > 1 else 6
     counts = read_counts(0,0)
     for nc in [0,2,3,4,5,6]:
-        print_findability(counts, f"{nc}c", max_move_count=6, drm_corners=nc)
+        print_findability(counts, f"{nc}c", max_move_count=n_moves, drm_corners=nc)
         for ne in [0,2,4,6,8]:
-            print_findability(counts, f"{nc}c{ne}e", max_move_count=6, drm_corners=nc,drm_edges=ne)
+            print_findability(counts, f"{nc}c{ne}e", max_move_count=n_moves, drm_corners=nc,drm_edges=ne)
