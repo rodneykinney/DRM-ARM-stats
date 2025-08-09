@@ -178,10 +178,10 @@ def findability_families(**kwargs):
     s_args.update({"is_dr_plus_trigger":0,"moves_to_ar":slice(0,3)})
     families.append(("AR in 0-2", select(**s_args)))
     s_args.update({"moves_to_ar":slice(3,None), "moves_to_4c4e": slice(0,2)})
-    families.append(("4c4e in 1-2", select(**s_args)))
-    s_args.update({"moves_to_4c4e":slice(3,None), "moves_to_3c2e": slice(0,2)})
-    families.append(("3c2e in 1-2", select(**s_args)))
-    s_args.update({"moves_to_3c2e": slice(3,None), "u_moves_to_ar": slice(0, 2)})
+    families.append(("4c4e in 1", select(**s_args)))
+    s_args.update({"moves_to_4c4e":slice(2,None), "moves_to_3c2e": slice(0,2)})
+    families.append(("3c2e in 1", select(**s_args)))
+    s_args.update({"moves_to_3c2e": slice(2,None), "u_moves_to_ar": slice(0, 2)})
     families.append(("DR-RL U DR-RL", select(**s_args)))
     s_args.update({"u_moves_to_ar": slice(2, None)})
     families.append(("(DR-RL U)x2+ DR-RL", select(**s_args)))
@@ -191,6 +191,7 @@ def findability_families(**kwargs):
 
 def print_findability(counts_data, name, **kwargs):
     print(name)
+    print("Family\tFrequency\tGenerators")
     total = np.sum(counts_data[select(**kwargs)]["n"])
     families = findability_families(**kwargs)
     family_counts = [(name, np.sum(counts_data[sel]["n"]), solutions(counts_data, sel, 5)) for
@@ -212,7 +213,9 @@ if __name__ == "__main__":
 
     n_moves = int(sys.argv[1])-1 if len(sys.argv) > 1 else 6
     counts = read_counts(0,0)
-    for nc in [0,2,3,4,5,6]:
+    for nc in [7,8]:
         print_findability(counts, f"{nc}c", max_move_count=n_moves, drm_corners=nc)
+        print("")
         for ne in [0,2,4,6,8]:
             print_findability(counts, f"{nc}c{ne}e", max_move_count=n_moves, drm_corners=nc,drm_edges=ne)
+            print("")

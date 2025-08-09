@@ -404,6 +404,9 @@ class Stats:
     @staticmethod
     def parse_line(line) -> Tuple[Selection, str]:
         index, co, eo, move_count, sol = unpack(line)
+        if sol.startswith("F2"):
+            move_count -= 1
+            sol = sol[3:]
         n_bad_corners, n_bad_edges = get_drm(co, eo)
         a, b = get_orbit_splits(co)
         corner_orbit_split = min(a, b, 4 - a, 4 - b)
@@ -577,6 +580,6 @@ if __name__ == "__main__":
     nmoves = int(sys.argv[3]) if len(sys.argv) > 3 else 7
 
     # print_ar_setups(nc, ne, nmoves)
-    print_drm_shifts(nc, ne, nmoves)
-    # print_psubn(nc, ne, nmoves)
+    # print_drm_shifts(nc, ne, nmoves)
+    print_psubn(nc, ne, nmoves)
     # print_ncases(nc, ne)
