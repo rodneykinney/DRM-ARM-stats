@@ -96,6 +96,9 @@ def read_counts(nc, ne):
     with open(filename, "r", encoding="utf-8") as file:
         for line in file:
             index, co, eo, move_count, sol = stats.unpack(line)
+            if sol.startswith("F2 "):
+                move_count -= 1
+                sol = sol[3:]
             ar_move_count = moves_to_ar(sol)
             drm_c, drm_e = get_drm(co, eo)
             drm = f"{drm_c}c{drm_e}e"
@@ -174,9 +177,9 @@ def findability_families(**kwargs):
     families.append(("DR + Trigger", select(**s_args)))
     s_args.update({"is_dr_plus_trigger":0,"moves_to_ar":slice(0,3)})
     families.append(("AR in 0-2", select(**s_args)))
-    s_args.update({"moves_to_ar":slice(3,None), "moves_to_4c4e": slice(0,3)})
+    s_args.update({"moves_to_ar":slice(3,None), "moves_to_4c4e": slice(0,2)})
     families.append(("4c4e in 1-2", select(**s_args)))
-    s_args.update({"moves_to_4c4e":slice(3,None), "moves_to_3c2e": slice(0,3)})
+    s_args.update({"moves_to_4c4e":slice(3,None), "moves_to_3c2e": slice(0,2)})
     families.append(("3c2e in 1-2", select(**s_args)))
     s_args.update({"moves_to_3c2e": slice(3,None), "u_moves_to_ar": slice(0, 2)})
     families.append(("DR-RL U DR-RL", select(**s_args)))
