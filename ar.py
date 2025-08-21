@@ -96,9 +96,6 @@ def read_counts(nc, ne):
     with open(filename, "r", encoding="utf-8") as file:
         for line in file:
             index, co, eo, move_count, sol = stats.unpack(line)
-            if sol.startswith("F2 "):
-                move_count -= 1
-                sol = sol[3:]
             ar_move_count = moves_to_ar(sol)
             drm_c, drm_e = get_drm(co, eo)
             drm = f"{drm_c}c{drm_e}e"
@@ -213,7 +210,7 @@ if __name__ == "__main__":
 
     n_moves = int(sys.argv[1])-1 if len(sys.argv) > 1 else 6
     counts = read_counts(0,0)
-    for nc in [7,8]:
+    for nc in [0,2,3,4,5,6,7,8]:
         print_findability(counts, f"{nc}c", max_move_count=n_moves, drm_corners=nc)
         print("")
         for ne in [0,2,4,6,8]:

@@ -404,9 +404,6 @@ class Stats:
     @staticmethod
     def parse_line(line) -> Tuple[Selection, str]:
         index, co, eo, move_count, sol = unpack(line)
-        if sol.startswith("F2"):
-            move_count -= 1
-            sol = sol[3:]
         n_bad_corners, n_bad_edges = get_drm(co, eo)
         a, b = get_orbit_splits(co)
         corner_orbit_split = min(a, b, 4 - a, 4 - b)
@@ -559,7 +556,7 @@ def print_drm_shifts(nc, ne, nmoves):
 def print_psubn(nc, ne, nmoves):
     stats = Stats.load(nc, ne, f"{nc}c{ne}e.csv")
 
-    rows = [("corner_case", [f"{nc}c"]), ("n_bad_edges", [ne]), ("n_ar_pairs", [0,1,2,3,4,5,6,7,8])]
+    rows = [("corner_case", [f"{nc}c"] + ALL_CORNER_CASES[nc]), ("n_bad_edges", [ne])]
     columns = ("n_pairs", [0, 1, 2, 3, 4])
     stats.print(rows, columns, stats.p_sub(nmoves))
 
