@@ -1,6 +1,5 @@
 import dataclasses
 import re
-import sys
 from collections import Counter, namedtuple
 from functools import cached_property
 from typing import List, Tuple, Optional, Callable
@@ -10,7 +9,6 @@ import random
 import numpy as np
 
 import vfmc_core
-from unicodedata import category
 
 # Corner indices are reflected along E layer
 #   Counter-clockwise when looking at U

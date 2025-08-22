@@ -1,0 +1,7 @@
+[project]
+name = "drm-arm-stats"
+version = "0.1.0"
+description = "Seeking the EO-to-DR meta"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["numpy"]
