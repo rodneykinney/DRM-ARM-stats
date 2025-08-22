@@ -7,6 +7,7 @@ from typing import Dict, Tuple, List, Optional
 from collections import defaultdict
 import sys
 import warnings
+import math
 
 warnings.filterwarnings('ignore')
 import tree_viz
@@ -40,8 +41,9 @@ class TargetMetricDecisionTree:
         model = DecisionTreeClassifier(
             max_depth=self.max_depth,
             random_state=42,
-            class_weight='balanced',
-            criterion='entropy'  # 'gini'
+            class_weight='balanced', # {0: 0.1, 1: 0.9},
+            criterion='entropy',  # 'gini',
+            min_impurity_decrease=0.01
         )
         model.fit(X_train, y_train)
         self.model = model
@@ -99,6 +101,7 @@ class TargetMetricDecisionTree:
             positive_samples = np.sum(y[node_sample_indices] == 1)
             fraction_of_cases = n_samples / len(y)
             positive_fraction = positive_samples / len(node_sample_indices)
+            mutual_info = -math.log(1 - positive_fraction * positive_fraction * fraction_of_cases)
             color = "#ffffff"
             if positive_fraction >= 0.5:
                 color = "#00dd00"
@@ -113,7 +116,7 @@ class TargetMetricDecisionTree:
             worst, highest = "", 0
             for i in node_sample_indices:
                 move_count = len(solutions[i].split(" "))
-                if move_count < lowest:
+                if y[i] and move_count < lowest:
                     lowest = move_count
                     best = solutions[i]
                 if move_count > highest:
@@ -121,7 +124,7 @@ class TargetMetricDecisionTree:
                     worst = solutions[i]
 
             node = tree_viz.TreeNode(
-                text=f"{condition}\n{100 * fraction_of_cases:0.1f}% of cases ({n_samples}/{len(y)})\n{metric}={100 * positive_fraction:0.1f}%\nbest: {best} ({lowest})\nworst: {worst} ({highest})",
+                text=f"{condition}\n{100 * fraction_of_cases:0.1f}% of cases ({n_samples}/{len(y)})\n{metric}={100 * positive_fraction:0.1f}%\nmutual info: {mutual_info:.1e}\nbest: {best} ({lowest})\nworst: {worst} ({highest})",
                 style={"color": color}
             )
 
@@ -145,7 +148,7 @@ class TargetMetricDecisionTree:
         return tree_viz.BinaryTreeHTMLGenerator(root)
 
 
-def load(drm_c, drm_e, easy: Optional[int] = None) -> Tuple[Dict[Tuple[str, int], List[Tuple[List, bool]]], List[str]]:
+def load(drm_c, drm_e) -> Tuple[Dict[Tuple[str, int], List[Tuple[List, bool]]], List[str]]:
     filename=f"{drm_c}c{drm_e}e.csv"
     data_by_drm = defaultdict(list)
     solutions = []
@@ -163,15 +166,13 @@ def load(drm_c, drm_e, easy: Optional[int] = None) -> Tuple[Dict[Tuple[str, int]
             #                                      bucket.corner_orbit_parity)
             corner_case = f"{drm_c}c"
             label = bucket.move_count < 7
-            if easy is not None:
-                label = label and bucket.is_simple == easy
             data_by_drm[corner_case].append((features, label))
             solutions.append(sol)
     return data_by_drm, solutions
 
 
-def main(drm_c, drm_e, easy):
-    data, solutions = load(drm_c, drm_e, easy)
+def main(drm_c, drm_e):
+    data, solutions = load(drm_c, drm_e)
     for corner_case, xy in data.items():
         title=f"{corner_case}{drm_e}e"
         print(f"Training decision tree for {title}")
@@ -192,12 +193,7 @@ def main(drm_c, drm_e, easy):
         trainer.train_to_target(X, y, feature_names)
         metric = "p_sub7"
         viz = trainer.visualize(metric, X, y, solutions)
-        if easy is None:
-            filename=f"drm_trees/{title}_{metric}.html"
-        elif easy == 1:
-            filename=f"drm_trees/{title}_{metric}_easy.html"
-        else:
-            filename=f"drm_trees/{title}_{metric}_hard.html"
+        filename=f"drm_trees/{title}_{metric}.html"
         viz.save_and_open(title, filename)
 
 
@@ -205,8 +201,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         drm_c = int(sys.argv[1])
         drm_e = int(sys.argv[2])
-        easy = int(sys.argv[3]) if len(sys.argv) > 3 else None
     else:
         print("Usage: python tree.py [corners] [edges]")
         sys.exit(1)
-    main(drm_c, drm_e, easy)
+    main(drm_c, drm_e)

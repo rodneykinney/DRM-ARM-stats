@@ -99,20 +99,10 @@ def read_counts(nc, ne):
             ar_move_count = moves_to_ar(sol)
             drm_c, drm_e = get_drm(co, eo)
             drm = f"{drm_c}c{drm_e}e"
-            trigger_drm, dr_breaking, _, _ = trigger(sol, drm)
-            is_dr_plus_trigger = 1 if trigger_drm == drm and not dr_breaking else 0
-            moves_to_4c4e = 3
-            if trigger_drm == "4c4e" and (trigger_drm != drm or dr_breaking):
-                setup = list(reversed(sol.split(" ")[1:]))
-                if sum(1 for m in setup if m in {"R","R'","L","L'"}) == 1:
-                    moves_to_4c4e = sum(1 for _ in itertools.takewhile(lambda m: m not in {"R","R'","L","L'"}, setup)) + 1
-            moves_to_3c2e = 3
-            if trigger_drm == "3c2e" and (trigger_drm != drm or dr_breaking):
-                setup = list(reversed(sol.split(" ")[3:]))
-                if sum(1 for m in setup if m in {"R","R'","L","L'"}) == 1:
-                    moves_to_3c2e = sum(1 for _ in itertools.takewhile(lambda m: m not in {"R","R'","L","L'"}, setup)) + 1
+            trigger_setup = trigger(sol, drm)
+            is_dr_plus_trigger = 1 if trigger_setup.is_dr_plus_trigger else 0
             u_count = sum(1 for s in sol.split(" ") if s in {"U", "U'", "D", "D'"})
-            selection = Selection(move_count=min(move_count,8),moves_to_ar=min(ar_move_count, 3),drm_corners=drm_c,drm_edges=drm_e,is_dr_plus_trigger=is_dr_plus_trigger,moves_to_4c4e=min(moves_to_4c4e,3), moves_to_3c2e=min(moves_to_3c2e,3), u_moves_to_ar=min(u_count,3))
+            selection = Selection(move_count=min(move_count,8),moves_to_ar=min(ar_move_count, 3),drm_corners=drm_c,drm_edges=drm_e,is_dr_plus_trigger=is_dr_plus_trigger,moves_to_4c4e=min(trigger_setup.moves_to_4c4e(3),3), moves_to_3c2e=min(trigger_setup.moves_to_3c2e(3),3), u_moves_to_ar=min(u_count,3))
             counts[selection]["n"] += 1
             sols = counts[selection]["solutions"]
             if sols == 0:
