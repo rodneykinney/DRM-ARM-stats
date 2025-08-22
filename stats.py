@@ -71,28 +71,41 @@ Selection = namedtuple(
         "n_fake_pairs",
         "n_side_pairs",
         "trigger_type",
-        "qt_to_trigger",
+        "difficulty",
         "move_count",
     ]
 )
 
+
 @dataclasses.dataclass
 class SolutionCategory:
     trigger_type: int
-    qt_to_trigger: int
+    difficulty: int
 
     def __repr__(self):
         if self.trigger_type == 0:
             return "DR + Trigger"
         if self.trigger_type == 1:
-            return f"{self.qt_to_trigger} QT to AR"
+            return f"AR ({self.difficulty_str})"
+        if self.trigger_type == 2:
+            return f"4c4e ({self.difficulty_str})"
         if self.trigger_type == 3:
-            return f"{self.qt_to_trigger} QT to 3c2e"
-        return f"{self.qt_to_trigger} QT to 4c4e"
+            return f"3c2e ({self.difficulty_str})"
+        raise f"Unknown trigger type {self.trigger_type}"
+
+    @property
+    def difficulty_str(self):
+        if self.difficulty == 0:
+            return "easy"
+        if self.difficulty == 1:
+            return "findable"
+        if self.difficulty == 2:
+            return "hard"
+        raise f"Unknown findability {self.difficulty}"
 
     @staticmethod
-    def all_categories(max_qt: int) -> List["SolutionCategory"]:
-        return [SolutionCategory(trigger_type=t,qt_to_trigger=q) for t in range(4) for q in range(max_qt+1)]
+    def all_categories() -> List["SolutionCategory"]:
+        return [SolutionCategory(trigger_type=t, difficulty=f) for t in range(4) for f in range(3)]
 
 
 @dataclasses.dataclass
@@ -106,7 +119,7 @@ class TriggerSetup:
 
     @cached_property
     def moves(self):
-        return self.generator.replace("L","R").replace("D","U").replace("'","").split(" ")
+        return self.generator.strip().replace("L", "R").replace("D", "U").replace("'", "").split(" ")
 
     @property
     def is_dr_plus_trigger(self):
@@ -159,19 +172,65 @@ class TriggerSetup:
         setup_length = sum(1 for c in setup)
         return setup_length
 
-
     @property
     def category(self) -> SolutionCategory:
         if self.is_dr_plus_trigger:
-            return SolutionCategory(trigger_type=0, qt_to_trigger=0)
+            return SolutionCategory(trigger_type=0, difficulty=0)
         if self.moves_to_3c2e is not None:
-            return SolutionCategory(trigger_type=3, qt_to_trigger=self.r_qt_to_3c2e)
+            difficulty = 0
+            if self.moves_to_3c2e > 1:
+                if self.r_qt_to_3c2e > 1:
+                    difficulty = 2
+                else:
+                    difficulty = 1
+            return SolutionCategory(trigger_type=3, difficulty=difficulty)
         if self.moves_to_4c4e >= self.moves_to_ar:
-            return SolutionCategory(trigger_type=1, qt_to_trigger=self.u_qt_to_ar)
+            difficulty = 0
+            if self.moves_to_ar > 1:
+                if self.u_qt_to_ar > 1:
+                    difficulty = 2
+                else:
+                    difficulty = 1
+            return SolutionCategory(trigger_type=1, difficulty=difficulty)
         else:
-            return SolutionCategory(trigger_type=2, qt_to_trigger=self.r_qt_to_4c4e)
+            difficulty = 0
+            if self.moves_to_4c4e > 1:
+                if self.r_qt_to_4c4e > 1:
+                    difficulty = 2
+                else:
+                    difficulty = 1
+            return SolutionCategory(trigger_type=2, difficulty=difficulty)
 
+    @staticmethod
+    def from_generator(generator: str, default_drm) -> "TriggerSetup":
+        sol = generator.replace("'", "")
+        sol = re.sub("D", "U", sol)
+        p = "".join(reversed(sol.split(' ')))
+        p = p.replace("RL2UR", "L2RUR")
+        p = p.replace("LR2UL", "R2LUL")
+        p = p.replace("LR2UR", "R2LUR")
+        p = p.replace("RL2UL", "L2RUL")
+        p = re.sub("[UDRLFB]2", ".", p)
+        trigger_drm, trigger_moves = "4c4e", p[-1:]
+        m = re.search(
+            r"^.*(?:([RL]\.\.+[RL])|(R\.R|L\.L)|(R\.L|L\.R)|(RUR|LUL)|(RUL|LUR)|(RL|LR))$", p)
+        if m:
+            triggers = ["AR", "4c2e", "4c6e", "3c2e", "7c8e", "8c8e"]
+            trigger_moves = next((t for t in m.groups() if t))
+            trigger_drm = next((s for i, s in enumerate(triggers) if m.group(i + 1)))
 
+        setup = re.sub(f"{trigger_moves}$", "", p)
+        off_axis_count = sum(1 for m in setup if m in ("L", "R"))
+        dr_breaking = (trigger_drm in (
+        default_drm, "AR") and off_axis_count > 0) or off_axis_count > 1
+        return TriggerSetup(
+            generator=generator,
+            starting_drm=default_drm,
+            trigger_drm=trigger_drm,
+            dr_breaking=dr_breaking,
+            trigger_move_count=len(trigger_moves),
+            off_axis_count=off_axis_count,
+        )
 
 
 def unpack(line):
@@ -221,6 +280,7 @@ Pairs = namedtuple(
         "n_ar"
     ]
 )
+
 
 def get_pair_counts(co, eo) -> Pairs:
     """Return number of top pairs, top pseudo-pairs, side pairs"""
@@ -345,66 +405,16 @@ def select(corner_case: str,
         n_fake_pairs,
         n_side_pairs,
         category.trigger_type if category else slice(None),
-        category.qt_to_trigger if category else slice(None),
+        category.difficulty if category else slice(None),
         move_count,
     )
 
+
 def selection(**kwargs) -> Selection:
-    features = dict((n,slice(None)) for n in Selection._fields)
+    features = dict((n, slice(None)) for n in Selection._fields)
     features.update(kwargs)
     return Selection(**features)
 
-
-
-
-def trigger(generator: str, default_drm) -> TriggerSetup:
-    sol = generator.replace("'", "")
-    sol = re.sub("D", "U", sol)
-    p = "".join(reversed(sol.split(' ')))
-    p = p.replace("RL2UR", "L2RUR")
-    p = p.replace("LR2UL", "R2LUL")
-    p = p.replace("LR2UR", "R2LUR")
-    p = p.replace("RL2UL", "L2RUL")
-    p = re.sub("[UDRLFB]2", ".", p)
-    trigger_drm, trigger_moves = "4c4e", p[-1:]
-    m = re.search(r"^.*(?:([RL]\.\.+[RL])|(R\.R|L\.L)|(R\.L|L\.R)|(RUR|LUL)|(RUL|LUR)|(RL|LR))$", p)
-    if m:
-        triggers = ["AR", "4c2e", "4c6e", "3c2e", "7c8e", "8c8e"]
-        trigger_moves = next((t for t in m.groups() if t))
-        trigger_drm = next((s for i, s in enumerate(triggers) if m.group(i + 1)))
-
-    setup = re.sub(f"{trigger_moves}$", "", p)
-    off_axis_count = sum(1 for m in setup if m in ("L", "R"))
-    dr_breaking = (trigger_drm in (default_drm, "AR") and off_axis_count > 0) or off_axis_count > 1
-    return TriggerSetup(
-        generator=generator,
-        starting_drm=default_drm,
-        trigger_drm=trigger_drm,
-        dr_breaking=dr_breaking,
-        trigger_move_count=len(trigger_moves),
-        off_axis_count=off_axis_count,
-    )
-
-
-def ar_setup(generator: str, default_drm: str) -> List[str]:
-    return trigger(generator, default_drm).ar_setup
-
-
-def shifts(generator: str, default_drm) -> List[str]:
-    trigger_drm, dr_breaking, trigger_move_count, _ = trigger(generator, default_drm)
-    if not dr_breaking:
-        return [] if trigger_drm == default_drm else [trigger_drm]
-    else:
-        shifts = [trigger_drm]
-        cube = vfmc_core.Cube("")
-        step = vfmc_core.StepInfo("dr", "ud")
-        for i, move in enumerate(generator.split(" ")):
-            cube.apply(vfmc_core.Algorithm(move))
-            if i >= trigger_move_count and move in {"R", "R'", "L", "L'"}:
-                shifts.append(step.case_name(cube))
-        shifts = shifts[:-1]
-        shifts.reverse()
-        return shifts
 
 class Stats:
     def __init__(self, n_bad_corners, n_bad_edges):
@@ -412,14 +422,14 @@ class Stats:
             n_bad_corners + 1,  # n_bad_corners
             5,  # corner_orbit_split
             2,  # corner_orbit_parity
-            min(5,n_bad_corners + 1),  # corner_arm
+            min(5, n_bad_corners + 1),  # corner_arm
             5,  # edge_arm
             n_bad_edges + 1,  # n_bad_edges
             min(5, n_bad_edges + 1),  # n_pairs,
             min(5, n_bad_edges + 1),  # n_fake_pairs,
             min(5, n_bad_edges + 1),  # n_side_pairs,
-            4, # trigger_type
-            3, # qt_to_trigger
+            4,  # trigger_type
+            3,  # difficulty
             11,  # max_move_count
         ),
             dtype=[("n", int), ("solutions", object)]
@@ -433,37 +443,22 @@ class Stats:
 
     def trigger_counts(self, drm, selection):
         triggers = [(ts.trigger_drm, ts.dr_breaking) for s in self.solutions(selection) for
-                    ts in [trigger(s, drm)]]
+                    ts in [TriggerSetup.from_generator(s, drm)]]
         counts = dict(Counter(triggers).items())
         total = sum(n for _, n in counts.items())
         header = ["trigger", "DR-preserving", "example", "DR-breaking", "example"]
         table = []
         for trig in set((t for t, _ in triggers)):
-            l = [s for s in self.solutions(selection) for ts in [trigger(s, drm)] if
+            l = [s for s in self.solutions(selection) for ts in
+                 [TriggerSetup.from_generator(s, drm)] if
                  (ts.trigger_drm, ts.dr_breaking) == (trig, False)]
             example = f'"{random.choice(l)}"' if l else ""
-            l = [s for s in self.solutions(selection) for ts in [trigger(s, drm)] if
+            l = [s for s in self.solutions(selection) for ts in
+                 [TriggerSetup.from_generator(s, drm)] if
                  (ts.trigger_drm, ts.dr_breaking) == (trig, True)]
             example_drb = f'"{random.choice(l)}"' if l else ""
             table.append((trig, counts.get((trig, False), 0) / total, example,
                           counts.get((trig, True), 0) / total, example_drb))
-        table.sort(key=lambda x: -x[1])
-        return [header] + table
-
-    def shift_counts(self, drm, selection):
-        shift_l = [" ".join(shifts(sol, drm)) for sol in self.solutions(selection)]
-        counts = dict(Counter(shift_l).items())
-        total = sum(n for _, n in counts.items())
-        pass
-        header = ["Switch", "Frequency", "Generators"]
-        table = []
-        for st in set(shift_l):
-            l = [s for s in self.solutions(selection) if " ".join(shifts(s, drm)) == st]
-            examples = ""
-            if l:
-                random.shuffle(l)
-                examples = "\t".join(l[:5])
-            table.append((st, counts.get(st) / total, examples))
         table.sort(key=lambda x: -x[1])
         return [header] + table
 
@@ -492,7 +487,7 @@ class Stats:
         return np.sum(self.counts[selection]["n"])
 
     def print(self, rows: List[Tuple[str, List]], columns: Tuple[str, List[int]],
-              quantity: Callable, select_row_col: Callable = lambda r,c : select(**(r | c))):
+              quantity: Callable, select_row_col: Callable = lambda r, c: select(**(r | c))):
         row_names = [r[0] for r in rows]
         header = "{}\t{}".format('\t'.join(row_names), columns[0])
         print(header)
@@ -520,19 +515,19 @@ class Stats:
         n_pairs, n_fake_pairs, n_side_pairs, n_ar_pairs = get_pair_counts(co, eo)
         drm = f"{n_bad_corners}c{n_bad_edges}e"
 
-        trigger_setup = trigger(sol, drm)
+        trigger_setup = TriggerSetup.from_generator(sol, drm)
         category = trigger_setup.category
         bucket = Selection(n_bad_corners=n_bad_corners,
                            corner_orbit_split=corner_orbit_split,
                            corner_orbit_parity=corner_orbit_parity,
-                           corner_arm=min(4,arm_c),
+                           corner_arm=min(4, arm_c),
                            edge_arm=arm_e,
                            n_bad_edges=n_bad_edges,
-                           n_pairs=min(4,n_pairs),
-                           n_fake_pairs=min(4,n_fake_pairs),
-                           n_side_pairs=min(4,n_side_pairs),
+                           n_pairs=min(4, n_pairs),
+                           n_fake_pairs=min(4, n_fake_pairs),
+                           n_side_pairs=min(4, n_side_pairs),
                            trigger_type=category.trigger_type,
-                           qt_to_trigger=min(2, category.qt_to_trigger),
+                           difficulty=category.difficulty,
                            move_count=move_count,
                            )
         return bucket, sol
@@ -557,24 +552,29 @@ class Stats:
         return stats
 
 
-def corner_case_name(n_bad_corners, corner_orbit_split, corner_orbit_parity):
-    if n_bad_corners == 4:
-        if corner_orbit_split == 2:
-            if corner_orbit_parity == 0:
-                return "4a"
+def corner_case_name(bucket):
+    case = ""
+    if bucket.n_bad_corners == 4:
+        if bucket.corner_orbit_split == 2:
+            if bucket.corner_orbit_parity == 0:
+                case = "4a"
             else:
-                return "4b"
-        elif corner_orbit_split == 1:
-            return "4c"
-        elif corner_orbit_split == 0:
-            return "4d"
-    elif n_bad_corners in [2, 3, 5, 6]:
-        if corner_orbit_split == 1:
-            return f"{n_bad_corners}a"
+                case = "4b"
+        elif bucket.corner_orbit_split == 1:
+            case = "4c"
+        elif bucket.corner_orbit_split == 0:
+            case = "4d"
+    elif bucket.n_bad_corners in [2, 3, 5, 6]:
+        if bucket.corner_orbit_split == 1:
+            case = f"{bucket.n_bad_corners}a"
         else:
-            return f"{n_bad_corners}b"
+            case = f"{bucket.n_bad_corners}b"
     else:
-        return f"{n_bad_corners}c"
+        case = f"{bucket.n_bad_corners}c"
+    arm = bucket.corner_arm
+    if case != "4a":
+        arm = min(arm,4-arm)
+    return f"{case}-{arm},"
 
 
 ALL_CORNER_CASES = [["0c-0"], [], ["2c-0", "2c-1"], ["3c-0", "3c-1"],
@@ -594,70 +594,6 @@ def columns(field, values, **kwargs):
     return f
 
 
-def print_ar_setups(nc, ne, nmoves):
-    stats = Stats.load(nc, ne, f"{nc}c{ne}e.csv")
-    drm = f"{nc}c{ne}e"
-
-    def print_row(case_name, selection: Selection):
-        solutions = stats.solutions(selection)
-        setups = [" ".join(ar_setup(sol, drm)) for sol in solutions]
-        counts = Counter(setups)
-        total = sum(n for _, n in counts.items())
-        l = list(counts.items())
-        l.sort(key=lambda t: -t[1])
-        for p, n in l:
-            sols = [s for s in solutions if " ".join(ar_setup(s, drm)) == p]
-            random.shuffle(sols)
-            print("{}\t{}\t{}".format(p, n / total, "\t".join(sols[:5])))
-
-    combined = Selection(
-        n_bad_corners=nc,
-        n_bad_edges=ne,
-        move_count=slice(0, nmoves),
-        corner_orbit_split=slice(None),
-        corner_orbit_parity=slice(None),
-        corner_arm=slice(None),
-        edge_arm=slice(None),
-        n_pairs=slice(None),
-        n_fake_pairs=slice(None),
-        n_side_pairs=slice(None),
-        trigger_type=slice(None),
-        qt_to_trigger=slice(None),
-    )
-    print_row(drm, combined)
-
-
-def print_drm_shifts(nc, ne, nmoves):
-    stats = Stats.load(nc, ne, f"{nc}c{ne}e.csv")
-
-    def print_table(case_name, selection: Selection):
-        table = stats.shift_counts(f"{nc}c{ne}e", selection)
-        print(case_name)
-        for row in table:
-            print("\t".join((str(s) or "-" for s in row)))
-        print("")
-
-    combined = Selection(
-        n_bad_corners=nc,
-        n_bad_edges=ne,
-        move_count=slice(0, nmoves),
-        corner_orbit_split=slice(None),
-        corner_orbit_parity=slice(None),
-        corner_arm=slice(None),
-        edge_arm=slice(None),
-        n_pairs=slice(None),
-        n_fake_pairs=slice(None),
-        n_side_pairs=slice(None),
-        trigger_type=slice(None),
-        qt_to_trigger=slice(None),
-    )
-    print_table(f"{nc}c", combined)
-
-    for case_name in ALL_CORNER_CASES[nc]:
-        selection = select(corner_case=case_name, n_bad_edges=ne, max_move_count=6)
-        print_table(case_name, selection)
-
-
 def print_psubn(nc, ne, nmoves):
     stats = Stats.load(nc, ne, f"{nc}c{ne}e.csv")
 
@@ -665,22 +601,24 @@ def print_psubn(nc, ne, nmoves):
     columns = ("n_pairs", [0, 1, 2, 3, 4])
     stats.print(rows, columns, stats.p_sub(nmoves))
 
+
 def print_ncases(nc, ne):
     stats = Stats.load(nc, ne, f"{nc}c{ne}e.csv")
 
     def select_row_col(rows, col):
         return selection(**(rows | col))
 
-    rows = [("n_bad_corners", [nc]), ("n_bad_edges", [ne]), ("n_pairs", list(range(0, ne+1)))]
-    columns = ("move_count", [slice(0,7), 7, slice(8,None)])
+    rows = [("n_bad_corners", [nc]), ("n_bad_edges", [ne]), ("n_pairs", list(range(0, ne + 1)))]
+    columns = ("move_count", [slice(0, 7), 7, slice(8, None)])
     stats.print(rows, columns, stats.n_cases, select_row_col)
+
 
 def findability_families(**kwargs):
     s_args = {}
     s_args.update(kwargs)
     families = []
-    for c in SolutionCategory.all_categories(2):
-        s_args.update({"trigger_type": c.trigger_type, "qt_to_trigger": c.qt_to_trigger})
+    for c in SolutionCategory.all_categories():
+        s_args.update({"trigger_type": c.trigger_type, "difficulty": c.difficulty})
         families.append((str(c), selection(**s_args)))
     return families
 
@@ -694,40 +632,91 @@ def print_findability(stats, drm, **kwargs):
     for family_name, count, sols in family_counts:
         if count == 0:
             continue
-        print("{}\t{}\t{}\t{}".format(drm, family_name, count / total if total else "-", "\t".join(sols)))
+        print("{}\t{}\t{}\t{}".format(drm, family_name, count / total if total else "-",
+                                      "\t".join(sols)))
 
-def print_subn_mutual_info():
-    stats = Stats.load(8,8)
+
+def print_mutual_info(max_move_count = 6):
+    stats = Stats.load(8, 8)
     columns = []
-    total_sub7 = np.sum(stats.counts[selection(move_count=slice(0,7))]["n"])
-    for nc in [0,2,3,4,5,6,7,8]:
-        for ne in [0,2,4,6,8]:
+    select_target = [
+        {"move_count": slice(0, max_move_count + 1), "difficulty": slice(0, 2)},
+    ]
+    total_target = sum(np.sum(stats.counts[selection(**s)]["n"]) for s in select_target)
+    for nc in [0, 2, 3, 4, 5, 6, 7, 8]:
+        for ne in [0, 2, 4, 6, 8]:
             drm = f"{nc}c{ne}e"
-            sub7=np.sum(stats.counts[selection(n_bad_corners=nc,n_bad_edges=ne,move_count=slice(0,7))]["n"])
-            over7=np.sum(stats.counts[selection(n_bad_corners=nc,n_bad_edges=ne,move_count=slice(7,None))]["n"])
-            findability=float(sub7)/(sub7+over7)
-            frequency=sub7/total_sub7
+            drm_args = {"n_bad_corners": nc, "n_bad_edges": ne}
+            total_count = np.sum(stats.counts[selection(**drm_args)]["n"])
+            target_count = 0
+            for s in select_target:
+                select = s | drm_args
+                target_count += np.sum(stats.counts[selection(**select)]["n"])
+            non_target_count = total_count-target_count
+            findability = float(target_count) / (target_count + non_target_count)
+            frequency = target_count / total_target
             mi = findability * frequency
-            columns.append((drm,mi, findability,frequency, sub7, over7))
+            columns.append((drm, mi, findability, frequency, target_count, non_target_count))
     columns.sort(key=lambda r: -r[1])
-    print("DRM\tMutual info\tFindability\tFrequency\tsub-7\t7+")
+    print(f"DRM\tMutual info\tp(sub-{max_move_count+1} | drm)\tp(drm | sub-{max_move_count+1})\tsub-{max_move_count+1}\t{max_move_count+1}+")
     for col in columns:
         print("\t".join(str(t) for t in col))
 
-if __name__ == "__main__":
-    print_subn_mutual_info()
+def print_all_findability(nmoves: int = 6):
+    print("DRM\tSetup\tFrequency\tGenerators")
+    stats = Stats.load(8, 8)
+    for nc in [0,2,3,4,5,6,7,8]:
+        for ne in [0,2,4,6,8]:
+            print_findability(stats, f"{nc}c{ne}e", move_count=slice(0,nmoves+1), n_bad_corners=nc, n_bad_edges=ne)
+            print("")
 
-    nmoves=6
-    # print("DRM\tSetup\tFrequency\tGenerators")
-    # stats = Stats.load(8, 8)
-    # for nc in [0,2,3,4,5,6,7,8]:
-    #     for ne in [0,2,4,6,8]:
-    #         print_findability(stats, f"{nc}c{ne}e", move_count=slice(0,nmoves+1), n_bad_corners=nc, n_bad_edges=ne)
-    #         print("")
+
+def print_special_findability():
+    stats = Stats.load(8,8)
+    subsets = {
+        (4,4): {"n_pairs": slice(2, None)},
+        (3,2): {},
+        (7,8): {"n_pairs": slice(4, None)},
+        (4,2): {"n_pairs": slice(1, None), "n_side_pairs": slice(1, None)},
+        (5,4): {"n_pairs": slice(2, None), "n_side_pairs": slice(2, None)},
+        (5,6): {"n_pairs": slice(3, None)},
+        (4,6): {"n_pairs": slice(3, None)},
+        (6,6): {"n_pairs": slice(3, None)},
+        (3,4): {"n_pairs": slice(2, None)},
+        (2,2): {"n_pairs": slice(1, None)},
+    }
+    for (nc,ne),args  in subsets.items():
+        print_findability(stats,f"{nc}c{ne}e",n_bad_corners=nc,n_bad_edges=ne, move_count=slice(0,7), difficulty=slice(0,2), **args)
+        print("")
+
+def print_4c4e_findability():
+    stats = Stats.load(4,4, "4c4e.csv")
+    subsets = {
+        "4a-0": {"n_pairs": slice(2, None)},
+        "4a-2": {"n_pairs": slice(1, None)},
+        "4a-4": {"edge_arm": 2},
+        "4b-0": {"n_pairs": slice(3, None)},
+        "4b-2": {"n_pairs": slice(2, None), "edge_arm": 1},
+        "4c-1": {"n_pairs": slice(2, None)},
+        "4d-2": {"n_pairs": slice(1, None), "edge_arm": 1},
+    }
+    for case,args  in subsets.items():
+        selection = select(corner_case=case, n_bad_edges=4)
+        print_findability(stats,case,
+                          n_bad_corners=4,n_bad_edges=4,
+                          corner_orbit_split=selection.corner_orbit_split, corner_orbit_parity=selection.corner_orbit_parity,corner_arm=selection.corner_arm,
+                          move_count=slice(0,7), difficulty=slice(0,2), **args)
+        print("")
+
+
+if __name__ == "__main__":
+    # print_mutual_info(6)
+    # print_special_findability()
+    print_4c4e_findability()
+
 
     # stats = Stats.load(7,8,f"7c8e.csv")
     # print_findability(stats,"7c8e 4+pairs", move_count=slice(0,nmoves+1), n_bad_corners=7, n_bad_edges=8, n_pairs=slice(4,None))
-
 
     # nc = int(sys.argv[1])
     # ne = int(sys.argv[2])

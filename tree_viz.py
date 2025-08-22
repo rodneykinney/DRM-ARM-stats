@@ -310,7 +310,6 @@ class BinaryTreeHTMLGenerator:
                 <h1>{title}</h1>
                 
                 <div class="tree-stats">
-                  Probability of sub-7 DR, given corner/edge configuration counts
                 </div>
                 
                 <div class="tree-container" style="width: {container_width}px; height: {container_height}px;">
@@ -318,12 +317,6 @@ class BinaryTreeHTMLGenerator:
                 </div>
                 
                 <div class="info">
-                    <ul>
-                      <li><b>n_pairs</b>: Number of top pairs
-                      <li><b>n_fake_pairs</b>: Number of top fake pairs
-                      <li><b>n_side_pairs</b>: Number of side pairs
-                      <li><b>corner_orbit_split</b>: Number of bad corners in the HTR orbit with the fewest bad corners
-                    </ul>
                 </div>
             </div>
         </body>

@@ -4,7 +4,7 @@
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>8c0e</title>
+            <title>7c8e</title>
             
         <style>
             body {
@@ -98,41 +98,58 @@
         </head>
         <body>
             <div class="container">
-                <h1>8c0e</h1>
+                <h1>7c8e</h1>
                 
                 <div class="tree-stats">
-                  Probability of sub-7 DR, given corner/edge configuration counts
                 </div>
                 
-                <div class="tree-container" style="width: 780.3px; height: 338.25px;">
+                <div class="tree-container" style="width: 1343.6px; height: 689.0px;">
                     
         <div id="node_1" class="tree-node non-leaf-node" 
-             style="left: 20.0px; top: 20px; width: 740.3px; height: 298.25px; 
-                    background-color: #ffffff;">
-            <div class="node-content" style="font-size: 16.0px; color: black; height: 144.0px;">
-                All<br>100.0% of cases (86/86)<br>p_sub7=1.2%<br>best: R U2 D2 F2 B2 L (6)<br>worst: R U2 D' R' L2 U' F2 B2 U L' (10)
+             style="left: 20.0px; top: 20px; width: 1303.6px; height: 649.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 16.0px; color: black; height: 164.8px;">
+                All<br>100.0% of cases (23520/23520)<br>p_sub7_findable=13.6%<br>mutual info: 1.9e-02<br>best: R D' L (3)<br>worst: R U D B2 R B2 L B2 D' (9)
             </div>
         <div id="node_2" class="tree-node leaf-node" 
-             style="left: 10px; top: 154.0px; width: 301.0px; height: 134.25px; 
-                    background-color: #00dd00;">
-            <div class="node-content" style="font-size: 14.5px; color: black; height: 134.25px;">
-                corner_arm <= 1<br>2.3% of cases (2/86)<br>p_sub7=50.0%<br>best: R U2 D2 F2 B2 L (6)<br>worst: R U2 D2 F2 B2 L U D (8)
-            </div></div>
-        <div id="node_3" class="tree-node leaf-node" 
-             style="left: 321.0px; top: 154.0px; width: 379.29999999999995px; height: 134.25px; 
+             style="left: 10px; top: 174.8px; width: 318.4px; height: 153.10000000000002px; 
                     background-color: #ffffff;">
-            <div class="node-content" style="font-size: 14.5px; color: black; height: 134.25px;">
-                corner_arm >= 2<br>97.7% of cases (84/86)<br>p_sub7=0.0%<br>best: R U2 D2 F2 B2 L D (7)<br>worst: R U2 D' R' L2 U' F2 B2 U L' (10)
+            <div class="node-content" style="font-size: 14.5px; color: black; height: 153.10000000000002px;">
+                n_pairs <= 3<br>50.0% of cases (11760/23520)<br>p_sub7_findable=0.7%<br>mutual info: 2.8e-05<br>best: R D' L2 U L' F2 (6)<br>worst: R U D B2 R B2 L B2 D' (9)
+            </div></div>
+        <div id="node_3" class="tree-node non-leaf-node" 
+             style="left: 338.4px; top: 174.8px; width: 925.1999999999999px; height: 464.20000000000005px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 14.5px; color: black; height: 153.10000000000002px;">
+                n_pairs >= 4<br>50.0% of cases (11760/23520)<br>p_sub7_findable=26.4%<br>mutual info: 3.5e-02<br>best: R D' L (3)<br>worst: R U D' R' U R' U L' D' (9)
+            </div>
+        <div id="node_4" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 163.10000000000002px; width: 567.8px; height: 291.1px; 
+                    background-color: #88ff88;">
+            <div class="node-content" style="font-size: 13.0px; color: black; height: 141.4px;">
+                edge_arm <= 1<br>12.1% of cases (2856/23520)<br>p_sub7_findable=43.2%<br>mutual info: 2.3e-02<br>best: R D' L (3)<br>worst: R D L2 D' L' U L2 U' (8)
+            </div>
+        <div id="node_5" class="tree-node leaf-node" 
+             style="left: 10px; top: 151.4px; width: 253.89999999999998px; height: 129.7px; 
+                    background-color: #00dd00;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 129.7px;">
+                corner_arm <= 2<br>4.6% of cases (1080/23520)<br>p_sub7_findable=63.8%<br>mutual info: 1.9e-02<br>best: R D' L (3)<br>worst: R U D' R' U' D L' D2 (8)
+            </div></div>
+        <div id="node_6" class="tree-node leaf-node" 
+             style="left: 273.9px; top: 151.4px; width: 253.89999999999998px; height: 129.7px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 129.7px;">
+                corner_arm >= 3<br>7.6% of cases (1776/23520)<br>p_sub7_findable=30.6%<br>mutual info: 7.1e-03<br>best: R D L D (4)<br>worst: R D L2 D' L' U L2 U' (8)
             </div></div></div>
+        <div id="node_7" class="tree-node leaf-node" 
+             style="left: 587.8px; top: 163.10000000000002px; width: 297.4px; height: 141.4px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 13.0px; color: black; height: 141.4px;">
+                edge_arm >= 2<br>37.9% of cases (8904/23520)<br>p_sub7_findable=21.0%<br>mutual info: 1.7e-02<br>best: R D' L U (4)<br>worst: R U D' R' U R' U L' D' (9)
+            </div></div></div></div>
                 </div>
                 
                 <div class="info">
-                    <ul>
-                      <li><b>n_pairs</b>: Number of top pairs
-                      <li><b>n_ppairs</b>: Number of top pseudo-pairs
-                      <li><b>n_spairs</b>: Number of side pairs
-                      <li><b>corner_orbit_split</b>: Number of bad corners in the HTR orbit with the fewest bad corners
-                    </ul>
                 </div>
             </div>
         </body>

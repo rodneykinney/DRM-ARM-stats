@@ -148,7 +148,9 @@ class TargetMetricDecisionTree:
         return tree_viz.BinaryTreeHTMLGenerator(root)
 
 
-def load(drm_c, drm_e) -> Tuple[Dict[Tuple[str, int], List[Tuple[List, bool]]], List[str]]:
+def load(drm_c, drm_e, target_move_count, difficulty: str, split_subcases: bool) -> Tuple[Dict[Tuple[str, int], List[Tuple[List, bool]]], List[str]]:
+    if difficulty is not None and difficulty not in ["easy", "findable"]:
+        raise f"Unknown difficulty {difficulty}"
     filename=f"{drm_c}c{drm_e}e.csv"
     data_by_drm = defaultdict(list)
     solutions = []
@@ -162,17 +164,21 @@ def load(drm_c, drm_e) -> Tuple[Dict[Tuple[str, int], List[Tuple[List, bool]]], 
                 bucket.n_fake_pairs,
                 bucket.n_side_pairs,
             ]
-            # corner_case = stats.corner_case_name(bucket.n_bad_corners, bucket.corner_orbit_split,
-            #                                      bucket.corner_orbit_parity)
             corner_case = f"{drm_c}c"
-            label = bucket.move_count < 7
+            if split_subcases:
+                corner_case = stats.corner_case_name(bucket)
+            label = bucket.move_count <= target_move_count
+            if difficulty == "easy" and bucket.difficulty > 0:
+                label = False
+            if difficulty == "findable" and bucket.difficulty > 1:
+                label = False
             data_by_drm[corner_case].append((features, label))
             solutions.append(sol)
     return data_by_drm, solutions
 
 
-def main(drm_c, drm_e):
-    data, solutions = load(drm_c, drm_e)
+def main(drm_c, drm_e, target_move_count, difficulty: str, split_subcases: bool):
+    data, solutions = load(drm_c, drm_e, target_move_count, difficulty, split_subcases)
     for corner_case, xy in data.items():
         title=f"{corner_case}{drm_e}e"
         print(f"Training decision tree for {title}")
@@ -191,7 +197,9 @@ def main(drm_c, drm_e):
 
         # Train to target metrics
         trainer.train_to_target(X, y, feature_names)
-        metric = "p_sub7"
+        metric = f"p_sub{target_move_count+1}"
+        if difficulty is not None:
+            metric = f"{metric}_{difficulty}"
         viz = trainer.visualize(metric, X, y, solutions)
         filename=f"drm_trees/{title}_{metric}.html"
         viz.save_and_open(title, filename)
@@ -201,7 +209,10 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         drm_c = int(sys.argv[1])
         drm_e = int(sys.argv[2])
+        target_move_count = int(sys.argv[3]) if len(sys.argv) > 3 else 6
+        difficulty = sys.argv[4] if len(sys.argv) > 4 else None
+        split_subcases = sys.argv[5].lower() == "true" if len(sys.argv) > 5 else False
     else:
         print("Usage: python tree.py [corners] [edges]")
         sys.exit(1)
-    main(drm_c, drm_e)
+    main(drm_c, drm_e, target_move_count, difficulty, split_subcases)
