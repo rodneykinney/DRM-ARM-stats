@@ -15,3 +15,15 @@ The trees use the following features:
 
 At each level, the training algorithm chooses the feature that does the best job of separating the 
 sub-7 solutions from the 7-plus solutions.
+
+Trees by DRM:
+- [4c4e](4c4e_p_sub7_findable.html)
+- [3c2e](3c2e_p_sub7_findable.html)
+- [7c8e](7c8e_p_sub7_findable.html)
+- [4c2e](4c2e_p_sub7_findable.html)
+- [5c4e](5c4e_p_sub7_findable.html)
+- [5c6e](5c6e_p_sub7_findable.html)
+- [4c6e](4c6e_p_sub7_findable.html)
+- [6c6e](6c6e_p_sub7_findable.html)
+- [3c4e](3c4e_p_sub7_findable.html)
+- [2c2e](2c2e_p_sub7_findable.html)
