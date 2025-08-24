@@ -1,13 +1,26 @@
-This is the code that I used to generate the DRM-ARM move count stats.
+This code analyzes the complete set of EO-to-DR solutions to determine an optimal search strategy usable in an FMC attempt.
 
-I use `g++ -Wall gen_full_data.cpp` to compile
+See https://docs.google.com/document/d/1AUQVrecEFZyR6okXAyJgtQZA-A0AJmAUevhJZlQMjAs/edit?usp=sharing
 
-and `./a.out` to generate the "full_data.csv" file.
+# Generating the raw data
+```
+g++ -Wall gen_full_data.cpp
+./a.out
 
-The format for this file is : <index_of_eo_to_dr_case>,<corner_orientations>,<position_of_eslice_edges>,<length_of_optimal>,<optimal_sequence>.
-Detailed info:
-    - index = coordinate for the case (i.e. a integer that is associated to the position. You can compute the coordinate given the position and vice-versa)
-    - corner orientations are 0 (oriented), 1 (cw twisted) or 2 (ccw twisted). Corner order is [ULF, URF, URB, ULB, DLF, DRF, DRB, DLB]
-    - eslice edges positions are stored as a bit array (1 means there is an E slice edge at this position, 0 if there isnt). Edge order is : [UF, UR, UB, UL, LF, RF, RB, LB, DF, DR, DB, DL]
-    - optimal sequence is only the first one that is found by the search algorithm, others are discarded (there may be easier ones depending on the case). It is optimal in the FB-EO-preserving metric : {U,D,R,L,F2,B2}
+python split_into_cases.py
+```
 
+# Generating the reports
+
+## Findability breakdowns
+```commandline
+python stats.py mutual-info
+python stats.py findability-all
+python stats.py findability-top10
+python stats.py findability-4c4e
+```
+
+## Decision tree training
+```commandline
+python tree.py <n_bad_corners> <n_bad_edges> <objective-move-count> [easy|findable|hard]
+```

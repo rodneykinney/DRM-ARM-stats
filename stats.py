@@ -5,10 +5,9 @@ from functools import cached_property
 from typing import List, Tuple, Optional, Callable
 from itertools import chain, product, takewhile, dropwhile
 import random
+import sys
 
 import numpy as np
-
-import vfmc_core
 
 # Corner indices are reflected along E layer
 #   Counter-clockwise when looking at U
@@ -711,16 +710,18 @@ def print_4c4e_findability():
 
 
 if __name__ == "__main__":
-    # print_mutual_info(6)
-    # print_all_findability()
-    # print_special_findability()
-    print_4c4e_findability()
+    if len(sys.argv) < 2:
+        print("Usage: python stats.py [mutual-info|findability-all|findability-top10|findability|4c4e")
+        sys.exit(1)
+    if sys.argv[1] == "mutual-info":
+        print_mutual_info(6)
+    elif sys.argv[1] == "findability-all":
+        print_all_findability()
+    elif sys.argv[1] == "findability-top10":
+        print_special_findability()
+    elif sys.argv[1] == "findability-4c4e":
+        print_4c4e_findability()
+    else:
+        print(f"Unknown command '{sys.argv[1]}'")
+        sys.exit(1)
 
-
-    # nc = int(sys.argv[1])
-    # ne = int(sys.argv[2])
-    # nmoves = int(sys.argv[3]) if len(sys.argv) > 3 else 6
-    # print_ar_setups(nc, ne, nmoves)
-    # print_drm_shifts(nc, ne, nmoves)
-    # print_psubn(nc, ne, nmoves)
-    # print_ncases(nc, ne)
