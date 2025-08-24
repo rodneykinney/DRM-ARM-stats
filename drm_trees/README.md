@@ -27,3 +27,12 @@ Trees by DRM:
 - [6c6e](6c6e_p_sub7_findable.html)
 - [3c4e](3c4e_p_sub7_findable.html)
 - [2c2e](2c2e_p_sub7_findable.html)
+
+4c4e corner case breakdown:
+- [4a-0](4a-0,4e_p_sub7_findable.html)
+- [4a-2](4a-2,4e_p_sub7_findable.html)
+- [4a-4](4a-4,4e_p_sub7_findable.html)
+- [4b-0](4b-0,4e_p_sub7_findable.html)
+- [4b-2](4b-2,4e_p_sub7_findable.html)
+- [4c-1](4c-1,4e_p_sub7_findable.html)
+- [4d-2](4d-2,4e_p_sub7_findable.html) 
