@@ -148,12 +148,12 @@ class TargetMetricDecisionTree:
         return tree_viz.BinaryTreeHTMLGenerator(root)
 
 
-def load(drm_c, drm_e, target_move_count, difficulty: str, split_subcases: bool) -> Tuple[Dict[Tuple[str, int], List[Tuple[List, bool]]], List[str]]:
+def load(drm_c, drm_e, target_move_count, difficulty: str, split_subcases: bool) -> Tuple[Dict[Tuple[str, int], List[Tuple[List, bool]]], Dict[str, List[str]]]:
     if difficulty is not None and difficulty not in ["easy", "findable"]:
         raise f"Unknown difficulty {difficulty}"
     filename=f"{drm_c}c{drm_e}e.csv"
     data_by_drm = defaultdict(list)
-    solutions = []
+    solutions = defaultdict(list)
     with open(filename, "r", encoding="utf-8") as file:
         for line in file:
             bucket, sol = Stats.parse_line(line)
@@ -173,7 +173,7 @@ def load(drm_c, drm_e, target_move_count, difficulty: str, split_subcases: bool)
             if difficulty == "findable" and bucket.difficulty > 1:
                 label = False
             data_by_drm[corner_case].append((features, label))
-            solutions.append(sol)
+            solutions[corner_case].append(sol)
     return data_by_drm, solutions
 
 
@@ -200,7 +200,7 @@ def main(drm_c, drm_e, target_move_count, difficulty: str, split_subcases: bool)
         metric = f"p_sub{target_move_count+1}"
         if difficulty is not None:
             metric = f"{metric}_{difficulty}"
-        viz = trainer.visualize(metric, X, y, solutions)
+        viz = trainer.visualize(metric, X, y, solutions[corner_case])
         filename=f"drm_trees/{title}_{metric}.html"
         viz.save_and_open(title, filename)
 

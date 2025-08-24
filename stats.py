@@ -105,7 +105,8 @@ class SolutionCategory:
 
     @staticmethod
     def all_categories() -> List["SolutionCategory"]:
-        return [SolutionCategory(trigger_type=t, difficulty=f) for t in range(4) for f in range(3)]
+        return ([SolutionCategory(trigger_type=0,difficulty=0)] +
+                [SolutionCategory(trigger_type=t, difficulty=d) for t in range(1,4) for d in range(3)])
 
 
 @dataclasses.dataclass
@@ -614,12 +615,12 @@ def print_ncases(nc, ne):
 
 
 def findability_families(**kwargs):
-    s_args = {}
-    s_args.update(kwargs)
     families = []
     for c in SolutionCategory.all_categories():
-        s_args.update({"trigger_type": c.trigger_type, "difficulty": c.difficulty})
-        families.append((str(c), selection(**s_args)))
+        if "difficulty" in kwargs and c.difficulty not in list(range(*kwargs["difficulty"].indices(100))):
+            continue
+        args = {} | kwargs | {"trigger_type": c.trigger_type, "difficulty": c.difficulty}
+        families.append((str(c), selection(**args)))
     return families
 
 
@@ -711,12 +712,10 @@ def print_4c4e_findability():
 
 if __name__ == "__main__":
     # print_mutual_info(6)
+    # print_all_findability()
     # print_special_findability()
     print_4c4e_findability()
 
-
-    # stats = Stats.load(7,8,f"7c8e.csv")
-    # print_findability(stats,"7c8e 4+pairs", move_count=slice(0,nmoves+1), n_bad_corners=7, n_bad_edges=8, n_pairs=slice(4,None))
 
     # nc = int(sys.argv[1])
     # ne = int(sys.argv[2])
