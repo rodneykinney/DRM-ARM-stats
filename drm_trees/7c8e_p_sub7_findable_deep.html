@@ -1,0 +1,457 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>7c8e</title>
+            
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 20px;
+                background-color: #f5f5f5;
+                text-align: center;
+            }
+            
+            .container {
+                margin: 0 auto;
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+                display: inline-block;
+                min-width: 400px;
+            }
+            
+            h1 {
+                text-align: center;
+                color: #333;
+                margin-bottom: 30px;
+                font-size: 2.5em;
+                font-weight: 300;
+            }
+            
+            .tree-container {
+                position: relative;
+                width: 100%;
+                min-height: 400px;
+                border: 3px solid #ddd;
+                border-radius: 10px;
+                overflow: auto;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            }
+            
+            .tree-node {
+                position: absolute;
+                border: 2px solid #333;
+                border-radius: 8px;
+                display: flex;
+                flex-direction: column;
+                box-sizing: border-box;
+            }
+            
+            .node-content {
+                padding: 10px;
+                text-align: center;
+                font-weight: bold;
+                color: white;
+                // text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+                line-height: 1.3;
+                overflow: hidden;
+                word-wrap: break-word;
+                position: relative;
+                z-index: 1;
+            }
+            
+            .leaf-node .node-content {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+            }
+            
+            .non-leaf-node .node-content {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .info {
+                text-align: center;
+                color: #666;
+                margin-top: 20px;
+                font-size: 1.1em;
+            }
+            
+            .tree-stats {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                text-align: center;
+                color: #495057;
+            }
+        </style>
+        
+        </head>
+        <body>
+            <div class="container">
+                <h1>7c8e</h1>
+                
+                <div class="tree-stats">
+                </div>
+                
+                <div class="tree-container" style="width: 8262.0px; height: 1103.0px;">
+                    
+        <div id="node_1" class="tree-node non-leaf-node" 
+             style="left: 20.0px; top: 20px; width: 8222.0px; height: 1063.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 16.0px; color: black; height: 164.8px;">
+                All<br>100.0% of cases (23520/23520)<br>p_sub7_findable=13.6%<br>mutual info: 1.9e-02<br>best: R D' L (3)<br>worst: R U D B2 R B2 L B2 D' (9)
+            </div>
+        <div id="node_2" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 174.8px; width: 2056.0px; height: 878.2px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 14.5px; color: black; height: 153.10000000000002px;">
+                n_pairs <= 3<br>50.0% of cases (11760/23520)<br>p_sub7_findable=0.7%<br>mutual info: 2.8e-05<br>best: R D' L2 U L' F2 (6)<br>worst: R U D B2 R B2 L B2 D' (9)
+            </div>
+        <div id="node_3" class="tree-node leaf-node" 
+             style="left: 10px; top: 163.10000000000002px; width: 305.2px; height: 141.4px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 13.0px; color: black; height: 141.4px;">
+                n_pairs <= 2<br>16.3% of cases (3840/23520)<br>p_sub7_findable=0.0%<br>mutual info: -0.0e+00<br>best:  (99)<br>worst: R U R2 L B2 D' F2 D2 R2 (9)
+            </div></div>
+        <div id="node_4" class="tree-node non-leaf-node" 
+             style="left: 325.2px; top: 163.10000000000002px; width: 1690.8px; height: 705.1px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 13.0px; color: black; height: 141.4px;">
+                n_pairs >= 3<br>33.7% of cases (7920/23520)<br>p_sub7_findable=1.1%<br>mutual info: 4.2e-05<br>best: R D' L2 U L' F2 (6)<br>worst: R U D B2 R B2 L B2 D' (9)
+            </div>
+        <div id="node_5" class="tree-node leaf-node" 
+             style="left: 10px; top: 151.4px; width: 260.79999999999995px; height: 129.7px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 129.7px;">
+                n_fake_pairs <= 3<br>8.4% of cases (1968/23520)<br>p_sub7_findable=0.0%<br>mutual info: -0.0e+00<br>best:  (99)<br>worst: R U D' R D' R D L' D2 (9)
+            </div></div>
+        <div id="node_6" class="tree-node non-leaf-node" 
+             style="left: 280.79999999999995px; top: 151.4px; width: 1370.0px; height: 543.7px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 129.7px;">
+                n_fake_pairs >= 4<br>25.3% of cases (5952/23520)<br>p_sub7_findable=1.5%<br>mutual info: 5.5e-05<br>best: R D' L2 U L' F2 (6)<br>worst: R U D B2 R B2 L B2 D' (9)
+            </div>
+        <div id="node_7" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 139.7px; width: 1078.0px; height: 394.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm <= 2<br>19.0% of cases (4480/23520)<br>p_sub7_findable=2.0%<br>mutual info: 7.3e-05<br>best: R D' L2 U L' F2 (6)<br>worst: R U D' L F2 U R' U L2 (9)
+            </div>
+        <div id="node_8" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 128.0px; width: 506.0px; height: 256.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                corner_arm <= 3<br>8.4% of cases (1984/23520)<br>p_sub7_findable=3.6%<br>mutual info: 1.1e-04<br>best: R D' L2 U L' F2 (6)<br>worst: R U R L' B2 U R L2 D' (9)
+            </div>
+        <div id="node_9" class="tree-node leaf-node" 
+             style="left: 10px; top: 128.0px; width: 214.0px; height: 118.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm <= 1<br>2.0% of cases (480/23520)<br>p_sub7_findable=8.3%<br>mutual info: 1.4e-04<br>best: R U2 R' U R' L (6)<br>worst: R U R' D2 L U R L2 (8)
+            </div></div>
+        <div id="node_10" class="tree-node leaf-node" 
+             style="left: 234.0px; top: 128.0px; width: 232.0px; height: 118.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm >= 2<br>6.4% of cases (1504/23520)<br>p_sub7_findable=2.1%<br>mutual info: 2.9e-05<br>best: R D' L2 U L' F2 (6)<br>worst: R U R L' B2 U R L2 D' (9)
+            </div></div></div>
+        <div id="node_11" class="tree-node non-leaf-node" 
+             style="left: 526.0px; top: 128.0px; width: 512.0px; height: 256.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                corner_arm >= 4<br>10.6% of cases (2496/23520)<br>p_sub7_findable=0.6%<br>mutual info: 4.4e-06<br>best: R U' L B2 D R2 (6)<br>worst: R U D' L F2 U R' U L2 (9)
+            </div>
+        <div id="node_12" class="tree-node leaf-node" 
+             style="left: 10px; top: 128.0px; width: 232.0px; height: 118.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_side_pairs <= 2<br>4.7% of cases (1096/23520)<br>p_sub7_findable=0.0%<br>mutual info: -0.0e+00<br>best:  (99)<br>worst: R U D' L F2 U R' U L2 (9)
+            </div></div>
+        <div id="node_13" class="tree-node leaf-node" 
+             style="left: 252.0px; top: 128.0px; width: 220.0px; height: 118.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_side_pairs >= 3<br>6.0% of cases (1400/23520)<br>p_sub7_findable=1.1%<br>mutual info: 7.8e-06<br>best: R U' L B2 D R2 (6)<br>worst: R U2 R2 U R D' L U2 (8)
+            </div></div></div></div>
+        <div id="node_14" class="tree-node leaf-node" 
+             style="left: 1098.0px; top: 139.7px; width: 232.0px; height: 118.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm >= 3<br>6.3% of cases (1472/23520)<br>p_sub7_findable=0.0%<br>mutual info: -0.0e+00<br>best:  (99)<br>worst: R U D B2 R B2 L B2 D' (9)
+            </div></div></div></div></div>
+        <div id="node_15" class="tree-node non-leaf-node" 
+             style="left: 2076.0px; top: 174.8px; width: 6106.0px; height: 878.2px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 14.5px; color: black; height: 153.10000000000002px;">
+                n_pairs >= 4<br>50.0% of cases (11760/23520)<br>p_sub7_findable=26.4%<br>mutual info: 3.5e-02<br>best: R D' L (3)<br>worst: R U D' R' U R' U L' D' (9)
+            </div>
+        <div id="node_16" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 163.10000000000002px; width: 2698.0px; height: 705.1px; 
+                    background-color: #88ff88;">
+            <div class="node-content" style="font-size: 13.0px; color: black; height: 141.4px;">
+                edge_arm <= 1<br>12.1% of cases (2856/23520)<br>p_sub7_findable=43.2%<br>mutual info: 2.3e-02<br>best: R D' L (3)<br>worst: R D L2 D' L' U L2 U' (8)
+            </div>
+        <div id="node_17" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 151.4px; width: 1572.0px; height: 543.7px; 
+                    background-color: #00dd00;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 129.7px;">
+                corner_arm <= 2<br>4.6% of cases (1080/23520)<br>p_sub7_findable=63.8%<br>mutual info: 1.9e-02<br>best: R D' L (3)<br>worst: R U D' R' U' D L' D2 (8)
+            </div>
+        <div id="node_18" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 139.7px; width: 732.0px; height: 394.0px; 
+                    background-color: #00dd00;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                corner_arm <= 1<br>1.7% of cases (408/23520)<br>p_sub7_findable=52.5%<br>mutual info: 4.8e-03<br>best: R D L' D (4)<br>worst: R U L' U' R2 B2 L2 (7)
+            </div>
+        <div id="node_19" class="tree-node leaf-node" 
+             style="left: 10px; top: 128.0px; width: 190.0px; height: 118.0px; 
+                    background-color: #00dd00;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm = 0<br>0.1% of cases (24/23520)<br>p_sub7_findable=100.0%<br>mutual info: 1.0e-03<br>best: R D L2 D' L (5)<br>worst: R D L2 D' L F2 (6)
+            </div></div>
+        <div id="node_20" class="tree-node non-leaf-node" 
+             style="left: 210.0px; top: 128.0px; width: 482.0px; height: 256.0px; 
+                    background-color: #88ff88;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm >= 1<br>1.6% of cases (384/23520)<br>p_sub7_findable=49.5%<br>mutual info: 4.0e-03<br>best: R D L' D (4)<br>worst: R U L' U' R2 B2 L2 (7)
+            </div>
+        <div id="node_21" class="tree-node leaf-node" 
+             style="left: 10px; top: 128.0px; width: 214.0px; height: 118.0px; 
+                    background-color: #00dd00;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_fake_pairs <= 2<br>1.0% of cases (240/23520)<br>p_sub7_findable=55.8%<br>mutual info: 3.2e-03<br>best: R D L' D (4)<br>worst: R U L' U' R2 B2 L2 (7)
+            </div></div>
+        <div id="node_22" class="tree-node leaf-node" 
+             style="left: 234.0px; top: 128.0px; width: 208.0px; height: 118.0px; 
+                    background-color: #88ff88;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_fake_pairs >= 3<br>0.6% of cases (144/23520)<br>p_sub7_findable=38.9%<br>mutual info: 9.3e-04<br>best: R U R2 D' L (5)<br>worst: R U L' U L2 U2 B2 (7)
+            </div></div></div></div>
+        <div id="node_23" class="tree-node non-leaf-node" 
+             style="left: 752.0px; top: 139.7px; width: 780.0px; height: 394.0px; 
+                    background-color: #00dd00;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                corner_arm >= 2<br>2.9% of cases (672/23520)<br>p_sub7_findable=70.7%<br>mutual info: 1.4e-02<br>best: R D' L (3)<br>worst: R U D' R' U' D L' D2 (8)
+            </div>
+        <div id="node_24" class="tree-node leaf-node" 
+             style="left: 10px; top: 128.0px; width: 226.0px; height: 118.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm = 0<br>0.2% of cases (48/23520)<br>p_sub7_findable=0.0%<br>mutual info: -0.0e+00<br>best:  (99)<br>worst: R U D' R' U' D L' D2 (8)
+            </div></div>
+        <div id="node_25" class="tree-node non-leaf-node" 
+             style="left: 246.0px; top: 128.0px; width: 494.0px; height: 256.0px; 
+                    background-color: #00dd00;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm >= 1<br>2.7% of cases (624/23520)<br>p_sub7_findable=76.1%<br>mutual info: 1.5e-02<br>best: R D' L (3)<br>worst: R U' L F2 B2 D2 F2 (7)
+            </div>
+        <div id="node_26" class="tree-node leaf-node" 
+             style="left: 10px; top: 128.0px; width: 220.0px; height: 118.0px; 
+                    background-color: #00dd00;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_fake_pairs <= 2<br>1.2% of cases (288/23520)<br>p_sub7_findable=82.3%<br>mutual info: 8.3e-03<br>best: R D' L (3)<br>worst: R U' L' F2 L2 B2 U2 (7)
+            </div></div>
+        <div id="node_27" class="tree-node leaf-node" 
+             style="left: 240.0px; top: 128.0px; width: 214.0px; height: 118.0px; 
+                    background-color: #00dd00;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_fake_pairs >= 3<br>1.4% of cases (336/23520)<br>p_sub7_findable=70.8%<br>mutual info: 7.2e-03<br>best: R D' L F2 (4)<br>worst: R U' L F2 B2 D2 F2 (7)
+            </div></div></div></div></div>
+        <div id="node_28" class="tree-node non-leaf-node" 
+             style="left: 1592.0px; top: 151.4px; width: 1066.0px; height: 543.7px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 129.7px;">
+                corner_arm >= 3<br>7.6% of cases (1776/23520)<br>p_sub7_findable=30.6%<br>mutual info: 7.1e-03<br>best: R D L D (4)<br>worst: R D L2 D' L' U L2 U' (8)
+            </div>
+        <div id="node_29" class="tree-node leaf-node" 
+             style="left: 10px; top: 139.7px; width: 226.0px; height: 118.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_side_pairs <= 2<br>0.6% of cases (144/23520)<br>p_sub7_findable=0.0%<br>mutual info: -0.0e+00<br>best:  (99)<br>worst: R D L2 D' L' U L2 U' (8)
+            </div></div>
+        <div id="node_30" class="tree-node non-leaf-node" 
+             style="left: 246.0px; top: 139.7px; width: 780.0px; height: 394.0px; 
+                    background-color: #88ff88;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_side_pairs >= 3<br>6.9% of cases (1632/23520)<br>p_sub7_findable=33.3%<br>mutual info: 7.7e-03<br>best: R D L D (4)<br>worst: R U D' B2 L' F2 R' D (8)
+            </div>
+        <div id="node_31" class="tree-node leaf-node" 
+             style="left: 10px; top: 128.0px; width: 226.0px; height: 118.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm = 0<br>0.4% of cases (96/23520)<br>p_sub7_findable=0.0%<br>mutual info: -0.0e+00<br>best:  (99)<br>worst: R U R2 L D' F2 D' R2 (8)
+            </div></div>
+        <div id="node_32" class="tree-node non-leaf-node" 
+             style="left: 246.0px; top: 128.0px; width: 494.0px; height: 256.0px; 
+                    background-color: #88ff88;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm >= 1<br>6.5% of cases (1536/23520)<br>p_sub7_findable=35.4%<br>mutual info: 8.2e-03<br>best: R D L D (4)<br>worst: R U D' B2 L' F2 R' D (8)
+            </div>
+        <div id="node_33" class="tree-node leaf-node" 
+             style="left: 10px; top: 128.0px; width: 208.0px; height: 118.0px; 
+                    background-color: #00dd00;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_fake_pairs <= 2<br>1.8% of cases (416/23520)<br>p_sub7_findable=50.0%<br>mutual info: 4.4e-03<br>best: R D L D (4)<br>worst: R U R F2 R L D F2 (8)
+            </div></div>
+        <div id="node_34" class="tree-node leaf-node" 
+             style="left: 228.0px; top: 128.0px; width: 226.0px; height: 118.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_fake_pairs >= 3<br>4.8% of cases (1120/23520)<br>p_sub7_findable=30.0%<br>mutual info: 4.3e-03<br>best: L D R D' F2 (5)<br>worst: R U D' B2 L' F2 R' D (8)
+            </div></div></div></div></div></div>
+        <div id="node_35" class="tree-node non-leaf-node" 
+             style="left: 2718.0px; top: 163.10000000000002px; width: 3348.0px; height: 705.1px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 13.0px; color: black; height: 141.4px;">
+                edge_arm >= 2<br>37.9% of cases (8904/23520)<br>p_sub7_findable=21.0%<br>mutual info: 1.7e-02<br>best: R D' L U (4)<br>worst: R U D' R' U R' U L' D' (9)
+            </div>
+        <div id="node_36" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 151.4px; width: 1376.0px; height: 543.7px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 129.7px;">
+                n_fake_pairs <= 3<br>31.1% of cases (7304/23520)<br>p_sub7_findable=23.2%<br>mutual info: 1.7e-02<br>best: R D' L U (4)<br>worst: R U D' R' U R' U L' D' (9)
+            </div>
+        <div id="node_37" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 139.7px; width: 1096.0px; height: 394.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm <= 3<br>30.3% of cases (7136/23520)<br>p_sub7_findable=23.7%<br>mutual info: 1.7e-02<br>best: R D' L U (4)<br>worst: R U D' R' U R' U L' D' (9)
+            </div>
+        <div id="node_38" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 128.0px; width: 524.0px; height: 256.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm <= 2<br>20.5% of cases (4816/23520)<br>p_sub7_findable=20.2%<br>mutual info: 8.4e-03<br>best: R D L' B2 D (5)<br>worst: R U D' R' U R' U L' D' (9)
+            </div>
+        <div id="node_39" class="tree-node leaf-node" 
+             style="left: 10px; top: 128.0px; width: 226.0px; height: 118.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                corner_arm <= 1<br>1.3% of cases (312/23520)<br>p_sub7_findable=30.8%<br>mutual info: 1.3e-03<br>best: R U R2 L D (5)<br>worst: R U R2 L D' L2 D2 B2 (8)
+            </div></div>
+        <div id="node_40" class="tree-node leaf-node" 
+             style="left: 246.0px; top: 128.0px; width: 238.0px; height: 118.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                corner_arm >= 2<br>19.1% of cases (4504/23520)<br>p_sub7_findable=19.5%<br>mutual info: 7.3e-03<br>best: R D L' B2 D (5)<br>worst: R U D' R' U R' U L' D' (9)
+            </div></div></div>
+        <div id="node_41" class="tree-node non-leaf-node" 
+             style="left: 544.0px; top: 128.0px; width: 512.0px; height: 256.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm >= 3<br>9.9% of cases (2320/23520)<br>p_sub7_findable=30.9%<br>mutual info: 9.5e-03<br>best: R D' L U (4)<br>worst: R U L B2 L2 F2 U D (8)
+            </div>
+        <div id="node_42" class="tree-node leaf-node" 
+             style="left: 10px; top: 128.0px; width: 238.0px; height: 118.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                corner_arm <= 2<br>0.4% of cases (104/23520)<br>p_sub7_findable=0.0%<br>mutual info: -0.0e+00<br>best:  (99)<br>worst: R U' L' B2 U' B2 R2 D' (8)
+            </div></div>
+        <div id="node_43" class="tree-node leaf-node" 
+             style="left: 258.0px; top: 128.0px; width: 214.0px; height: 118.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                corner_arm >= 3<br>9.4% of cases (2216/23520)<br>p_sub7_findable=32.4%<br>mutual info: 9.9e-03<br>best: R D' L U (4)<br>worst: R U L B2 L2 F2 U D (8)
+            </div></div></div></div>
+        <div id="node_44" class="tree-node leaf-node" 
+             style="left: 1116.0px; top: 139.7px; width: 220.0px; height: 118.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm >= 4<br>0.7% of cases (168/23520)<br>p_sub7_findable=0.0%<br>mutual info: -0.0e+00<br>best:  (99)<br>worst: R U L U' F2 U' F2 D (8)
+            </div></div></div>
+        <div id="node_45" class="tree-node non-leaf-node" 
+             style="left: 1396.0px; top: 151.4px; width: 1912.0px; height: 543.7px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 11.5px; color: black; height: 129.7px;">
+                n_fake_pairs >= 4<br>6.8% of cases (1600/23520)<br>p_sub7_findable=11.0%<br>mutual info: 8.2e-04<br>best: R U R2 L B2 D (6)<br>worst: R U D F2 R F2 L' D (8)
+            </div>
+        <div id="node_46" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 139.7px; width: 1066.0px; height: 394.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_side_pairs <= 3<br>3.4% of cases (800/23520)<br>p_sub7_findable=14.0%<br>mutual info: 6.7e-04<br>best: R D' L F2 U' L2 (6)<br>worst: R U D F2 R F2 L' D (8)
+            </div>
+        <div id="node_47" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 128.0px; width: 512.0px; height: 256.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_side_pairs <= 2<br>1.6% of cases (368/23520)<br>p_sub7_findable=6.5%<br>mutual info: 6.7e-05<br>best: R U' R2 L' U' F2 (6)<br>worst: R U D F2 R F2 L' D (8)
+            </div>
+        <div id="node_48" class="tree-node leaf-node" 
+             style="left: 10px; top: 128.0px; width: 238.0px; height: 118.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_side_pairs <= 1<br>0.5% of cases (120/23520)<br>p_sub7_findable=20.0%<br>mutual info: 2.0e-04<br>best: R U' R2 L' U' F2 (6)<br>worst: R U2 D' R' U' R' L' U2 (8)
+            </div></div>
+        <div id="node_49" class="tree-node leaf-node" 
+             style="left: 258.0px; top: 128.0px; width: 214.0px; height: 118.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_side_pairs >= 2<br>1.1% of cases (248/23520)<br>p_sub7_findable=0.0%<br>mutual info: -0.0e+00<br>best:  (99)<br>worst: R U D F2 R F2 L' D (8)
+            </div></div></div>
+        <div id="node_50" class="tree-node non-leaf-node" 
+             style="left: 532.0px; top: 128.0px; width: 494.0px; height: 256.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_side_pairs >= 3<br>1.8% of cases (432/23520)<br>p_sub7_findable=20.4%<br>mutual info: 7.6e-04<br>best: R D' L F2 U' L2 (6)<br>worst: R U D' R U2 R' U2 L (8)
+            </div>
+        <div id="node_51" class="tree-node leaf-node" 
+             style="left: 10px; top: 128.0px; width: 220.0px; height: 118.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm <= 2<br>1.2% of cases (288/23520)<br>p_sub7_findable=13.9%<br>mutual info: 2.4e-04<br>best: R D' L F2 U' L2 (6)<br>worst: R U D' R U2 R' U2 L (8)
+            </div></div>
+        <div id="node_52" class="tree-node leaf-node" 
+             style="left: 240.0px; top: 128.0px; width: 214.0px; height: 118.0px; 
+                    background-color: #88ff88;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm >= 3<br>0.6% of cases (144/23520)<br>p_sub7_findable=33.3%<br>mutual info: 6.8e-04<br>best: R D' L' U L2 F2 (6)<br>worst: R D' L' U L2 F2 U2 (7)
+            </div></div></div></div>
+        <div id="node_53" class="tree-node non-leaf-node" 
+             style="left: 1086.0px; top: 139.7px; width: 786.0px; height: 394.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                n_side_pairs >= 4<br>3.4% of cases (800/23520)<br>p_sub7_findable=8.0%<br>mutual info: 2.2e-04<br>best: R U R2 L B2 D (6)<br>worst: R U R D' R' D' L U2 (8)
+            </div>
+        <div id="node_54" class="tree-node non-leaf-node" 
+             style="left: 10px; top: 128.0px; width: 500.0px; height: 256.0px; 
+                    background-color: #ddffdd;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm <= 2<br>2.6% of cases (616/23520)<br>p_sub7_findable=10.4%<br>mutual info: 2.8e-04<br>best: R U R2 L B2 D (6)<br>worst: R U R D' R' D' L U2 (8)
+            </div>
+        <div id="node_55" class="tree-node leaf-node" 
+             style="left: 10px; top: 128.0px; width: 220.0px; height: 118.0px; 
+                    background-color: #aaffaa;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                corner_arm <= 1<br>0.5% of cases (120/23520)<br>p_sub7_findable=20.0%<br>mutual info: 2.0e-04<br>best: R U R2 L D L2 (6)<br>worst: R U D2 L U' D L' F2 (8)
+            </div></div>
+        <div id="node_56" class="tree-node leaf-node" 
+             style="left: 240.0px; top: 128.0px; width: 220.0px; height: 118.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                corner_arm >= 2<br>2.1% of cases (496/23520)<br>p_sub7_findable=8.1%<br>mutual info: 1.4e-04<br>best: R U R2 L B2 D (6)<br>worst: R U R D' R' D' L U2 (8)
+            </div></div></div>
+        <div id="node_57" class="tree-node leaf-node" 
+             style="left: 520.0px; top: 128.0px; width: 226.0px; height: 118.0px; 
+                    background-color: #ffffff;">
+            <div class="node-content" style="font-size: 10px; color: black; height: 118.0px;">
+                edge_arm >= 3<br>0.8% of cases (184/23520)<br>p_sub7_findable=0.0%<br>mutual info: -0.0e+00<br>best:  (99)<br>worst: R U L' U L2 D' F2 D2 (8)
+            </div></div></div></div></div></div></div>
+                </div>
+                
+                <div class="info">
+                </div>
+            </div>
+        </body>
+        </html>
+        
