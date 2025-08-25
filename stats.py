@@ -425,7 +425,7 @@ class Stats:
             min(5, n_bad_corners + 1),  # corner_arm
             5,  # edge_arm
             n_bad_edges + 1,  # n_bad_edges
-            min(5, n_bad_edges + 1),  # n_pairs,
+            n_bad_edges + 1,  # n_pairs,
             min(5, n_bad_edges + 1),  # n_fake_pairs,
             min(5, n_bad_edges + 1),  # n_side_pairs,
             4,  # trigger_type
@@ -664,7 +664,7 @@ def print_mutual_info(max_move_count = 6):
 
 def print_all_findability(nmoves: int = 6):
     print("DRM\tSetup\tFrequency\tGenerators")
-    stats = Stats.load(8, 8)
+    stats = Stats.load(8, 8,"7c8e.csv")
     for nc in [0,2,3,4,5,6,7,8]:
         for ne in [0,2,4,6,8]:
             print_findability(stats, f"{nc}c{ne}e", move_count=slice(0,nmoves+1), n_bad_corners=nc, n_bad_edges=ne)
@@ -676,7 +676,7 @@ def print_special_findability():
     subsets = {
         (4,4): {"n_pairs": slice(2, None)},
         (3,2): {},
-        (7,8): {"n_pairs": slice(4, None)},
+        (7,8): {"n_pairs": slice(5, None)},
         (4,2): {"n_pairs": slice(1, None), "n_side_pairs": slice(1, None)},
         (5,4): {"n_pairs": slice(2, None), "n_side_pairs": slice(2, None)},
         (5,6): {"n_pairs": slice(3, None)},
