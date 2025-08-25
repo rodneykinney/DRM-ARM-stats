@@ -664,7 +664,7 @@ def print_mutual_info(max_move_count = 6):
 
 def print_all_findability(nmoves: int = 6):
     print("DRM\tSetup\tFrequency\tGenerators")
-    stats = Stats.load(8, 8,"7c8e.csv")
+    stats = Stats.load(8, 8)
     for nc in [0,2,3,4,5,6,7,8]:
         for ne in [0,2,4,6,8]:
             print_findability(stats, f"{nc}c{ne}e", move_count=slice(0,nmoves+1), n_bad_corners=nc, n_bad_edges=ne)
