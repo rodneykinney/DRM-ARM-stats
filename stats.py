@@ -523,7 +523,7 @@ class Stats:
                            corner_arm=min(4, arm_c),
                            edge_arm=arm_e,
                            n_bad_edges=n_bad_edges,
-                           n_pairs=min(4, n_pairs),
+                           n_pairs=n_pairs,
                            n_fake_pairs=min(4, n_fake_pairs),
                            n_side_pairs=min(4, n_side_pairs),
                            trigger_type=category.trigger_type,
