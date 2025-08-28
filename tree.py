@@ -24,7 +24,7 @@ class TargetMetricDecisionTree:
         self.max_depth = max_depth
         self.model = None
 
-    def train_to_target(self, X_train, y_train, feature_names=None):
+    def train_to_target(self, X_train, y_train, feature_names=None, min_impurity_decrease=.01):
         """
         Train decision tree to minimum depth that achieves target metrics.
 
@@ -43,7 +43,7 @@ class TargetMetricDecisionTree:
             random_state=42,
             class_weight='balanced', # {0: 0.1, 1: 0.9},
             criterion='entropy',  # 'gini',
-            min_impurity_decrease=0.01
+            min_impurity_decrease=min_impurity_decrease
         )
         model.fit(X_train, y_train)
         self.model = model
@@ -101,7 +101,7 @@ class TargetMetricDecisionTree:
             positive_samples = np.sum(y[node_sample_indices] == 1)
             fraction_of_cases = n_samples / len(y)
             positive_fraction = positive_samples / len(node_sample_indices)
-            mutual_info = -math.log(1 - positive_fraction * positive_fraction * fraction_of_cases)
+            mutual_info = positive_fraction * positive_samples
             color = "#ffffff"
             if positive_fraction >= 0.5:
                 color = "#00dd00"
@@ -124,7 +124,7 @@ class TargetMetricDecisionTree:
                     worst = solutions[i]
 
             node = tree_viz.TreeNode(
-                text=f"{condition}\n{100 * fraction_of_cases:0.1f}% of cases ({n_samples}/{len(y)})\n{metric}={100 * positive_fraction:0.1f}%\nmutual info: {mutual_info:.1e}\nbest: {best} ({lowest})\nworst: {worst} ({highest})",
+                text=f"{condition}\n{100 * fraction_of_cases:0.1f}% of cases ({n_samples}/{len(y)})\n{metric}={100 * positive_fraction:0.1f}%\nmutual info: {int(mutual_info)}\nbest: {best} ({lowest})\nworst: {worst} ({highest})",
                 style={"color": color}
             )
 
@@ -177,7 +177,7 @@ def load(drm_c, drm_e, target_move_count, difficulty: str, split_subcases: bool)
     return data_by_drm, solutions
 
 
-def main(drm_c, drm_e, target_move_count, difficulty: str, split_subcases: bool):
+def main(drm_c, drm_e, target_move_count, difficulty: str, split_subcases: bool, min_impurity_decrease):
     data, solutions = load(drm_c, drm_e, target_move_count, difficulty, split_subcases)
     for corner_case, xy in data.items():
         title=f"{corner_case}{drm_e}e"
@@ -196,13 +196,15 @@ def main(drm_c, drm_e, target_move_count, difficulty: str, split_subcases: bool)
         trainer = TargetMetricDecisionTree(max_depth=6)
 
         # Train to target metrics
-        trainer.train_to_target(X, y, feature_names)
+        trainer.train_to_target(X, y, feature_names, min_impurity_decrease)
         metric = f"p_sub{target_move_count+1}"
         if difficulty is not None:
             metric = f"{metric}_{difficulty}"
         viz = trainer.visualize(metric, X, y, solutions[corner_case])
-        filename=f"drm_trees/{title}_{metric}.html"
-        viz.save_and_open(title, filename)
+        basename=f"drm_trees/{title}_{metric}"
+        if min_impurity_decrease != .01:
+            basename = f"{metric}_{min_impurity_decrease}".replace("0.","")
+        viz.save_and_open(title, f"{basename}.html")
 
 
 if __name__ == "__main__":
@@ -211,8 +213,9 @@ if __name__ == "__main__":
         drm_e = int(sys.argv[2])
         target_move_count = int(sys.argv[3]) if len(sys.argv) > 3 else 6
         difficulty = sys.argv[4] if len(sys.argv) > 4 else None
-        split_subcases = sys.argv[5].lower() == "true" if len(sys.argv) > 5 else False
+        min_impurity_decrease = float(sys.argv[5]) if len(sys.argv) > 5 else .01
+        split_subcases = sys.argv[6].lower() == "true" if len(sys.argv) > 6 else False
     else:
         print("Usage: python tree.py [corners] [edges]")
         sys.exit(1)
-    main(drm_c, drm_e, target_move_count, difficulty, split_subcases)
+    main(drm_c, drm_e, target_move_count, difficulty, split_subcases, min_impurity_decrease)

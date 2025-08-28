@@ -2,7 +2,7 @@ import dataclasses
 import re
 from collections import Counter, namedtuple
 from functools import cached_property
-from typing import List, Tuple, Optional, Callable
+from typing import List, Tuple, Optional, Callable, Union
 from itertools import chain, product, takewhile, dropwhile
 import random
 import sys
@@ -79,33 +79,37 @@ Selection = namedtuple(
 @dataclasses.dataclass
 class SolutionCategory:
     trigger_type: int
-    difficulty: int
+    difficulty: Union[int, list[int]]
 
     def __repr__(self):
         if self.trigger_type == 0:
             return "DR + Trigger"
         if self.trigger_type == 1:
-            return f"AR ({self.difficulty_str})"
+            return f"AR{self.difficulty_str}"
         if self.trigger_type == 2:
-            return f"4c4e ({self.difficulty_str})"
+            return f"4c4e{self.difficulty_str}"
         if self.trigger_type == 3:
-            return f"3c2e ({self.difficulty_str})"
+            return f"3c2e{self.difficulty_str}"
         raise f"Unknown trigger type {self.trigger_type}"
 
     @property
     def difficulty_str(self):
+        if isinstance(self.difficulty, list):
+            return ""
         if self.difficulty == 0:
-            return "easy"
+            return " (easy)"
         if self.difficulty == 1:
-            return "findable"
+            return " (findable)"
         if self.difficulty == 2:
-            return "hard"
-        raise f"Unknown findability {self.difficulty}"
+            return " (hard)"
+        raise f"Unknown difficulty {self.difficulty}"
 
     @staticmethod
-    def all_categories() -> List["SolutionCategory"]:
-        return ([SolutionCategory(trigger_type=0,difficulty=0)] +
-                [SolutionCategory(trigger_type=t, difficulty=d) for t in range(1,4) for d in range(3)])
+    def all_categories(difficulties: Optional[list[int]] = None) -> List["SolutionCategory"]:
+        if difficulties is None:
+            return ([SolutionCategory(trigger_type=0,difficulty=0)] +
+                    [SolutionCategory(trigger_type=t, difficulty=d) for t in range(1,4) for d in range(3)])
+        return [SolutionCategory(trigger_type=t, difficulty=difficulties) for t in range(0,4)]
 
 
 @dataclasses.dataclass
@@ -123,7 +127,7 @@ class TriggerSetup:
 
     @property
     def is_dr_plus_trigger(self):
-        return self.trigger_drm == self.starting_drm and not self.dr_breaking
+        return self.starting_drm not in ["4c2e","4c6e","8c8e"] and self.trigger_drm == self.starting_drm and not self.dr_breaking
 
     @property
     def moves_to_4c4e(self):
@@ -533,7 +537,8 @@ class Stats:
         return bucket, sol
 
     @staticmethod
-    def load(n_bad_corners, n_bad_edges, filename="full_data.csv") -> "Stats":
+    def load(n_bad_corners, n_bad_edges) -> "Stats":
+        filename="full_data.csv" if n_bad_corners == 8 else f"{n_bad_corners}c{n_bad_edges}e.csv"
         stats = Stats(n_bad_corners, n_bad_edges)
         with open(filename, "r", encoding="utf-8") as file:
             for line in file:
@@ -595,7 +600,7 @@ def columns(field, values, **kwargs):
 
 
 def print_psubn(nc, ne, nmoves):
-    stats = Stats.load(nc, ne, f"{nc}c{ne}e.csv")
+    stats = Stats.load(nc, ne)
 
     rows = [("corner_case", [f"{nc}c"] + ALL_CORNER_CASES[nc]), ("n_bad_edges", [ne])]
     columns = ("n_pairs", [0, 1, 2, 3, 4])
@@ -603,7 +608,7 @@ def print_psubn(nc, ne, nmoves):
 
 
 def print_ncases(nc, ne):
-    stats = Stats.load(nc, ne, f"{nc}c{ne}e.csv")
+    stats = Stats.load(nc, ne)
 
     def select_row_col(rows, col):
         return selection(**(rows | col))
@@ -615,10 +620,12 @@ def print_ncases(nc, ne):
 
 def findability_families(**kwargs):
     families = []
-    for c in SolutionCategory.all_categories():
-        if "difficulty" in kwargs and c.difficulty not in list(range(*kwargs["difficulty"].indices(100))):
-            continue
-        args = {} | kwargs | {"trigger_type": c.trigger_type, "difficulty": c.difficulty}
+    difficulties = list(range(*kwargs["difficulty"].indices(100))) if "difficulty" in kwargs else None
+    for c in SolutionCategory.all_categories(difficulties):
+        if difficulties is None:
+            args = {} | kwargs | {"trigger_type": c.trigger_type, "difficulty": c.difficulty}
+        else:
+            args = {} | kwargs | {"trigger_type": c.trigger_type}
         families.append((str(c), selection(**args)))
     return families
 
@@ -655,7 +662,7 @@ def print_mutual_info(max_move_count = 6):
             non_target_count = total_count-target_count
             findability = float(target_count) / (target_count + non_target_count)
             frequency = target_count / total_target
-            mi = findability * frequency
+            mi = findability * target_count
             columns.append((drm, mi, findability, frequency, target_count, non_target_count))
     columns.sort(key=lambda r: -r[1])
     print(f"DRM\tMutual info\tp(sub-{max_move_count+1} | drm)\tp(drm | sub-{max_move_count+1})\tsub-{max_move_count+1}\t{max_move_count+1}+")
@@ -671,7 +678,7 @@ def print_all_findability(nmoves: int = 6):
             print("")
 
 
-def print_special_findability():
+def print_top10_findability():
     stats = Stats.load(8,8)
     subsets = {
         (4,4): {"n_pairs": slice(2, None)},
@@ -690,7 +697,7 @@ def print_special_findability():
         print("")
 
 def print_4c4e_findability():
-    stats = Stats.load(4,4, "4c4e.csv")
+    stats = Stats.load(4,4)
     subsets = {
         "4a-0": {"n_pairs": slice(2, None)},
         "4a-2": {"n_pairs": slice(1, None)},
@@ -718,7 +725,7 @@ if __name__ == "__main__":
     elif sys.argv[1] == "findability-all":
         print_all_findability()
     elif sys.argv[1] == "findability-top10":
-        print_special_findability()
+        print_top10_findability()
     elif sys.argv[1] == "findability-4c4e":
         print_4c4e_findability()
     else:
